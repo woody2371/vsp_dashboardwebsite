@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<meta http-equiv="refresh" content="30">
+<meta http-equiv="refresh" content="90">
 <html>
 <title>VSP Dashboard</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3-theme-black.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3-theme-black.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/dashboard.css') }}">
 <body>
-
 <!-- Side Navigation -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-center" style="display:none" id="mySidebar">
   <h1 class="w3-xxxlarge w3-text-theme">Navigation</h1>
@@ -30,7 +30,8 @@
 
   </div>
 </header>
-<div class="w3-row w3-border">
+
+
 <!-- Outstanding Picks -->
 <div class="w3-half w3-container">
   <hr>
@@ -38,7 +39,7 @@
     <h2>Outstanding Picks</h2>
   </div>
 <div class="w3-responsive w3-card-4">
-<table class="w3-table w3-striped w3-bordered">
+<table class="w3-hoverable w3-table w3-striped w3-bordered">
 <thead>
 <tr class="w3-theme">
   <th></th>
@@ -49,15 +50,33 @@
 <tbody>
 {% for product in pickDict %}
 <tr class="w3-large">
-  <td class="w3-left-align w3-blue-grey">{{ product }}</td>
+  <td class="w3-left-align w3-blue-grey">{{ product[0:20] }}</td>
   {% set totalqty = pickDict[product]|sum(attribute='qty') %}
   <td class="w3-blue-grey w3-center"> {{ totalqty }} </td>
   <td class="w3-blue-grey">{{ pickDict[product][0]['qtyonhand'] }}</td>
 </tr>
 {% for so in pickDict[product] %}
 <div id="{{ product }}" class="w3-hide">
-<tr class="w3-white">
-  <td class="w3-right">{{ so['billToName'][0:15] }} - SO{{ so['num'][0:10] }}</td>
+<tr>
+  <td class="w3-right">
+  <a 
+						  href="javascript:void(0)" 
+						  data-toggle="popover" 
+						  data-html="true" 
+						  data-trigger="focus" 
+						  title="<div class='w3-center w3-large'>{{ so['billToName'] }} - {{ so['num'] }}</div>" 
+						  data-content="
+							<div class='w3-responsive'>
+							<table class='w3-table w3-striped w3-bordered'>
+							<tr>
+								<th>Product</th>
+								<th>Qty</th>
+								<th>Status</th>
+							</tr>
+							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
+							</table>
+							</div>
+							">{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>
   <td class="w3-green w3-center">{{ so['qty'] }}</td>
   <td>{{ so['qtyonhand'] }}</td>
 </tr>
@@ -109,7 +128,7 @@
     <h2>Backorders</h2>
   </div>
 <div class="w3-responsive w3-card-4">
-<table class="w3-table w3-striped w3-bordered">
+<table class="w3-hoverable w3-table w3-striped w3-bordered">
 <thead>
 <tr class="w3-theme">
   <th></th>
@@ -122,7 +141,7 @@
 <tbody>
 {% for product in backorderDict %}
 <tr class="w3-large">
-  <td class="w3-left-align w3-blue-grey">{{ product }}</td>
+  <td class="w3-left-align w3-blue-grey">{{ product[0:25] }}</td>
   {% set totalqty = backorderDict[product]|sum(attribute='qty') %}
   <td {% if totalqty == backorderDict[product][0]['qtyonordertotal']  %} class="w3-center w3-yellow"> {% elif totalqty > backorderDict[product][0]['qtyonordertotal']|int %} class="w3-center w3-red"> {% else %} class="w3-center w3-blue-grey">  {% endif %}{{ totalqty }}</td>
   <td {% if totalqty == backorderDict[product][0]['qtyonordertotal']  %} class="w3-center w3-yellow"> {% elif totalqty > backorderDict[product][0]['qtyonordertotal']|int %} class="w3-center w3-red"> {% else %} class="w3-center w3-blue-grey">  {% endif %}{{ backorderDict[product][0]['qtyonordertotal'] }}</td>
@@ -131,15 +150,33 @@
 </tr>
 {% for so in backorderDict[product] %}
 {% if (backorderDict[product][0]['dateLastModified']|string).split(" ")[0] == (date|string).split(" ")[0] %} {%set daysold = "Today"%} {% else %} {% set daysold = ((date - backorderDict[product][0]['dateLastModified'])|string).split(',')[0] %} {% endif %}
-<div id="backorder-{{ so['num'][0:10] }}" class="w3-hide">
-<tr class="w3-white">
-  <td class="w3-right"><a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" title="{{ so['billToName'] }} - {{ so['num'] }}" data-content="<table><tbody><tr><td>Product</td><td>Qty</td>{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <td>{{ row['productNum'] }}</td><td>{{ row['qty'] }} {% endfor %} {% endif %} {% endfor %}</tbody></table>">{{ so['billToName'] }} - {{ so['num'][0:10] }}</a></td>
+<tr id="backorder-{{ so['num'][0:10] }}">
+  <td class="w3-right">   <a 
+						  href="javascript:void(0)" 
+						  data-toggle="popover" 
+						  data-html="true" 
+						  data-trigger="focus" 
+						  title="<div class='w3-center w3-large'>{{ so['billToName'] }} - {{ so['num'] }}</div>" 
+						  data-content="
+							<div class='w3-responsive'>
+							<table class='w3-table w3-striped w3-bordered'>
+							<tr>
+								<th>Product</th>
+								<th>Qty</th>
+								<th>Status</th>
+							</tr>
+							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
+							</table>
+							</div>
+							">
+						  {{ so['billToName'] }} - {{ so['num'][0:10] }}
+						  </a>
+  </td>
   <td class="w3-center">{{ so['qty'] }}</td>
   <td class="w3-center">{{ so['qtyonordertotal'] }}</td>
   <td>{{ so['notes'][0:20] }}</td>
   <td>{{  daysold }}</td>
 </tr>
-</div>
 {% endfor %}
 {% endfor %}
 </tbody>
@@ -153,7 +190,10 @@
 <script>
 //Popover 
 $(document).ready(function(){
-    $('[data-toggle="popover"]').popover({html:true});
+    $('[data-toggle="popover"]').popover({
+	html:true,
+	sanitize:false,
+	});
 });
 // Side navigation
 

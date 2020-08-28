@@ -25,6 +25,22 @@ def loadDicts():
                 row['qty'] = '0'
             row['qty'] = int(row['qty'])
             row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%d/%m/%Y')
+            if (row['pickitemstatusId']) == '5':
+                row['pickitemstatusText'] = "Short"
+            elif (row['pickitemstatusId']) == '6':
+                    row['pickitemstatusText'] = "Hold"
+            elif (row['pickitemstatusId']) == '10':
+                row['pickitemstatusText'] = "Ready to Pick"
+            elif (row['pickitemstatusId']) == '11':
+                row['pickitemstatusText'] = "Ready to Pick"
+            elif (row['pickitemstatusId']) == '20':
+                row['pickitemstatusText'] = "Pick Started"
+            elif (row['pickitemstatusId']) == '30':
+                row['pickitemstatusText'] = "Committed"
+            elif (row['pickitemstatusId']) == '40':
+                row['pickitemstatusText'] = "Finished"
+            else:
+                row['pickitemstatusText'] = "Unknown"
             productDict[row['productNum']].append(row)
             soDict[row['num']].append(row)
 

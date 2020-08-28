@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<meta http-equiv="refresh" content="30">
+<html>
+<title>VSP Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3-theme-black.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+<body>
+
+<!-- Side Navigation -->
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-center" style="display:none" id="mySidebar">
+  <h1 class="w3-xxxlarge w3-text-theme">Navigation</h1>
+  <button class="w3-bar-item w3-button" onclick="w3_close()">Close <i class="fa fa-remove"></i></button>
+  <a href="index.html" class="w3-bar-item w3-button">Main Tab</a>
+  <a href="#" class="w3-bar-item w3-button">All Open Orders</a>
+  <a href="#" class="w3-bar-item w3-button">Inventory Monitor</a>
+</nav>
+
+<!-- Header -->
+<header class="w3-container w3-theme w3-padding" id="myHeader">
+  <i onclick="w3_open()" class="fa fa-bars w3-xlarge w3-button w3-theme"></i> 
+  <div class="w3-center">
+  <h1 class="w3-xxxlarge w3-animate-bottom">VSP Dashboard</h1>
+
+  </div>
+</header>
+<div class="w3-row w3-border">
+<!-- Outstanding Picks -->
+<div class="w3-half w3-container">
+  <hr>
+  <div class="w3-center">
+    <h2>Outstanding Picks</h2>
+  </div>
+<div class="w3-responsive w3-card-4">
+<table class="w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th></th>
+  <th>Qty to Pick</th>
+  <th>Qty in Stock</th>
+</tr>
+</thead>
+<tbody>
+{% for product in pickDict %}
+<tr class="w3-large">
+  <td class="w3-left-align w3-blue-grey">{{ product }}</td>
+  {% set totalqty = pickDict[product]|sum(attribute='qty') %}
+  <td class="w3-blue-grey w3-center"> {{ totalqty }} </td>
+  <td class="w3-blue-grey">{{ pickDict[product][0]['qtyonhand'] }}</td>
+</tr>
+{% for so in pickDict[product] %}
+<div id="{{ product }}" class="w3-hide">
+<tr class="w3-white">
+  <td class="w3-right">{{ so['billToName'][0:15] }} - SO{{ so['num'][0:10] }}</td>
+  <td class="w3-green w3-center">{{ so['qty'] }}</td>
+  <td>{{ so['qtyonhand'] }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+<!-- Committed Sales -->
+<div class="w3-half w3-container">
+  <hr>
+  <div class="w3-center">
+    <h2>Committed Sales</h2>
+  </div>
+<div class="w3-responsive w3-card-4">
+<table class="w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th></th>
+  <th class="w3-center">Qty Committed</th>
+</tr>
+</thead>
+<tbody>
+{% for so in commitDict %}
+<tr class="w3-large">
+  <td class="w3-left-align w3-blue-grey">{{ commitDict[so][0]['billToName'][0:15] }} - SO{{ so }}</td>
+  {% if (commitDict[so][0]['dateLastModified']|string).split(" ")[0] == (date|string).split(" ")[0] %} {%set daysold = "Today"%} {% else %} {% set daysold = ((date - commitDict[so][0]['dateLastModified'])|string).split(',')[0] %} {% endif %}
+  <td colspan="1" {% if daysold == "Today" %} class="w3-blue-grey w3-center" {% elif (daysold.split(" ")[0]|int) < 14 %} class="w3-blue-grey w3-center" {% elif (daysold.split(" ")[0]|int) < 28 %} class="w3-yellow w3-center" {% else %} class="w3-red w3-center" {% endif %}>{{ daysold }}</td>
+</tr>
+{% for product in commitDict[so] %}
+<div id="SO155468" class="w3-hide">
+<tr class="w3-white">
+  <td class="w3-right">{{ product['productNum'][0:25]  }}</td>
+  <td class="w3-green w3-center">{{ product['qty']  }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Backorders -->
+<div class="w3-container">
+  <hr>
+  <div class="w3-center">
+    <h2>Backorders</h2>
+  </div>
+<div class="w3-responsive w3-card-4">
+<table class="w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th></th>
+  <th class="w3-center">Qty on Backorder</th>
+  <th class="w3-center">Qty on Order</th>
+  <th class="w3-center">Notes</th>
+  <th class="w3-center">Days Issued</th>
+</tr>
+</thead>
+<tbody>
+{% for product in backorderDict %}
+<tr class="w3-large">
+  <td class="w3-left-align w3-blue-grey">{{ product }}</td>
+  {% set totalqty = backorderDict[product]|sum(attribute='qty') %}
+  <td {% if totalqty == backorderDict[product][0]['qtyonordertotal']  %} class="w3-center w3-yellow"> {% elif totalqty > backorderDict[product][0]['qtyonordertotal']|int %} class="w3-center w3-red"> {% else %} class="w3-center w3-blue-grey">  {% endif %}{{ totalqty }}</td>
+  <td {% if totalqty == backorderDict[product][0]['qtyonordertotal']  %} class="w3-center w3-yellow"> {% elif totalqty > backorderDict[product][0]['qtyonordertotal']|int %} class="w3-center w3-red"> {% else %} class="w3-center w3-blue-grey">  {% endif %}{{ backorderDict[product][0]['qtyonordertotal'] }}</td>
+  <td class="w3-center w3-blue-grey"></td>
+  <td class="w3-center w3-blue-grey"></td>
+</tr>
+{% for so in backorderDict[product] %}
+{% if (backorderDict[product][0]['dateLastModified']|string).split(" ")[0] == (date|string).split(" ")[0] %} {%set daysold = "Today"%} {% else %} {% set daysold = ((date - backorderDict[product][0]['dateLastModified'])|string).split(',')[0] %} {% endif %}
+<div id="backorder-{{ so['num'][0:10] }}" class="w3-hide">
+<tr class="w3-white">
+  <td class="w3-right"><a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" title="{{ so['billToName'] }} - {{ so['num'] }}" data-content="<table><tbody><tr><td>Product</td><td>Qty</td>{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <td>{{ row['productNum'] }}</td><td>{{ row['qty'] }} {% endfor %} {% endif %} {% endfor %}</tbody></table>">{{ so['billToName'] }} - {{ so['num'][0:10] }}</a></td>
+  <td class="w3-center">{{ so['qty'] }}</td>
+  <td class="w3-center">{{ so['qtyonordertotal'] }}</td>
+  <td>{{ so['notes'][0:20] }}</td>
+  <td>{{  daysold }}</td>
+</tr>
+</div>
+{% endfor %}
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
+<script>
+//Popover 
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true});
+});
+// Side navigation
+
+function w3_open() {
+  var x = document.getElementById("mySidebar");
+  x.style.width = "100%";
+  x.style.fontSize = "40px";
+  x.style.paddingTop = "10%";
+  x.style.display = "block";
+}
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+
+// Tabs
+function openCity(evt, cityName) {
+  var i;
+  var x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  var activebtn = document.getElementsByClassName("testbtn");
+  for (i = 0; i < x.length; i++) {
+    activebtn[i].className = activebtn[i].className.replace(" w3-dark-grey", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " w3-dark-grey";
+}
+
+// Accordions
+function showRows(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-hide") == -1) {
+    x.className += " w3-hide";
+  } else { 
+    x.className = x.className.replace(" w3-hide", "");
+  }
+}
+
+// Slideshows
+var slideIndex = 1;
+
+function plusDivs(n) {
+  slideIndex = slideIndex + n;
+  showDivs(slideIndex);
+}
+
+// Progress Bars
+function move() {
+  var elem = document.getElementById("myBar");   
+  var width = 5;
+  var id = setInterval(frame, 10);
+  function frame() {
+    if (width == 100) {
+      clearInterval(id);
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+      elem.innerHTML = width * 1  + '%';
+    }
+  }
+}
+</script>
+
+</body>
+</html>

@@ -23,8 +23,9 @@ def loadDicts():
         for row in exportReader:
             if(row['qty'] == ''):
                 row['qty'] = '0'
-            row['qty'] = int(row['qty'])
-            row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%d/%m/%Y')
+            row['qty'] = int(float(row['qty']))
+            row['dateLastModified'] = (row['dateLastModified'].split(" "))[0]
+            row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%Y-%m-%d')
             if (row['pickitemstatusId']) == '5':
                 row['pickitemstatusText'] = "Short"
             elif (row['pickitemstatusId']) == '6':

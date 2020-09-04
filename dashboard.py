@@ -14,3 +14,10 @@ def index():
     fbdata.loadDicts()
     lastUpdated = time.ctime(os.path.getmtime('C:\Dashboard\Dashboard Website\static\dbexport\export.csv'))
     return render_template('template.html', pickDict=fbdata.filterproductDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), sodict=fbdata.fullSoDict(), lastUpdated=lastUpdated)
+
+@app.route('/pickBySales')
+def pickBySales():
+    fbdata.loadDicts()
+    lastUpdated = time.ctime(os.path.getmtime('C:\Dashboard\Dashboard Website\static\dbexport\export.csv'))
+    return render_template('template_pickBySales.html', pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+

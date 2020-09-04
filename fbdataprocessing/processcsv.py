@@ -24,6 +24,7 @@ def loadDicts():
             if(row['qty'] == ''):
                 row['qty'] = '0'
             row['qty'] = int(float(row['qty']))
+            row['qtyonhand'] = int(float(row['qtyonhand']))
             row['dateLastModified'] = (row['dateLastModified'].split(" "))[0]
             row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%Y-%m-%d')
             if (row['pickitemstatusId']) == '5':
@@ -80,11 +81,11 @@ def filtersoDict(column, data, match=True):
         for subDict in soDict[so]:
             if match:
                 if(subDict[column] in data):
-                    returnDict[product].append(subDict)
+                    returnDict[so].append(subDict)
             else:
                 if(subDict[column] not in data):
-                    returnDict[product].append(subDict)
-
+                    returnDict[so].append(subDict)
+    return returnDict
 def committedDict():
     """
     Returns all orders that are committed in full
@@ -109,6 +110,8 @@ def committedDict():
 
 def fullSoDict():
     return soDict
-    
+
+def fullProductDict():
+    return productDict
 
 loadDicts()

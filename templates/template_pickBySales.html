@@ -42,21 +42,20 @@
 <table class="w3-hoverable w3-table w3-striped w3-bordered">
 <thead>
 <tr class="w3-theme">
-  <th><a href='/pickBySales'>Sort by Sales Order</a></th>
+  <th><a href='/'>Sort by Product</a></th>
   <th>Qty to Pick</th>
   <th>Qty in Stock</th>
 </tr>
 </thead>
 <tbody>
-{% for product in pickDict %}
+{% for so in pickDict %}
 <tr class="w3-large">
-  <td class="w3-left-align w3-blue-grey">{{ product[0:20] }}</td>
-  {% set totalqty = pickDict[product]|sum(attribute='qty') %}
-  <td class="w3-blue-grey w3-center"> {{ totalqty }} </td>
-  <td class="w3-blue-grey">{{ pickDict[product][0]['qtyonhand'] }}</td>
+  <td class="w3-left-align w3-blue-grey">{{ pickDict[so][0]['billToName'][0:12] }} - {{ so[0:20] }}</td>
+  <td class="w3-blue-grey w3-center">  </td>
+  <td class="w3-blue-grey"></td>
 </tr>
-{% for so in pickDict[product] %}
-<div id="{{ product }}" class="w3-hide">
+{% for product in pickDict[so] %}
+<div id="{{ so }}" class="w3-hide">
 <tr>
   <td class="w3-right">
   <a 
@@ -64,21 +63,21 @@
 						  data-toggle="popover" 
 						  data-html="true" 
 						  data-trigger="focus" 
-						  title="<div class='w3-center w3-large'>{{ so['billToName'] }} - {{ so['num'] }}</div>" 
+						  title="<div class='w3-center w3-large'>{{ product['productNum'] }}</div>" 
 						  data-content="
 							<div class='w3-responsive'>
 							<table class='w3-table w3-striped w3-bordered'>
 							<tr>
-								<th>Product</th>
+								<th>SO</th>
 								<th>Qty</th>
 								<th>Status</th>
 							</tr>
-							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
+							{% for i in productdict %} {% if i==product['productNum'] %} {% for row in productdict[i] %} <tr><td>{{ row['billToName'][0:10] }} - {{ row['num'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
 							</table>
 							</div>
-							">{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>
-  <td class="w3-green w3-center">{{ so['qty'] }}</td>
-  <td>{{ so['qtyonhand'] }}</td>
+							">{{ product['productNum'][0:25] }}</div></a></td>
+  <td class="w3-green w3-center">{{ product['qty'] }}</td>
+  <td class='w3-center'>{{ product['qtyonhand'] }}</td>
 </tr>
 {% endfor %}
 {% endfor %}

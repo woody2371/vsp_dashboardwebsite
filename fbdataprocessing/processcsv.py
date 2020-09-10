@@ -21,12 +21,26 @@ def loadDicts():
         exportReader = csv.DictReader(csvfile)
         # Sort data by product and by so
         for row in exportReader:
+            #No quantity returns null instead of zero - that doesn't work for displaying on a webpage
             if(row['qty'] == ''):
                 row['qty'] = '0'
+            if(row['qtyonhand'] == ''):
+                row['qtyonhand'] = '0'
+            #Qty for some reason is to 5 decimal places, we can't have half a camera.
             row['qty'] = int(float(row['qty']))
             row['qtyonhand'] = int(float(row['qtyonhand']))
+            #Pull just the date, don't care about time
             row['dateLastModified'] = (row['dateLastModified'].split(" "))[0]
+            #Turn date into an actual datetime object
             row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%Y-%m-%d')
+            #Error checking - Fishbowl is really bad at knowing whether items are short or not
+            if (row['pickitemstatusId']) == '5':
+                if(row['qtyonhand'] >= row['qty']):
+                    row['pickitemstatusText'] = "Ready to Pick"
+            if ((row['pickitemstatusId']) == '10') or ((row['pickitemstatusId']) == '11'):
+                if(row['qtyonhand'] <= row['qty']):
+                    row['pickitemstatusText'] = "Short"
+            #Turn status codes into readable english
             if (row['pickitemstatusId']) == '5':
                 row['pickitemstatusText'] = "Short"
             elif (row['pickitemstatusId']) == '6':
@@ -42,6 +56,7 @@ def loadDicts():
             elif (row['pickitemstatusId']) == '40':
                 row['pickitemstatusText'] = "Finished"
             else:
+                #Catchall - not sure this is even required but at this point I don't trust fishbowl
                 row['pickitemstatusText'] = "Unknown"
             productDict[row['productNum']].append(row)
             soDict[row['num']].append(row)

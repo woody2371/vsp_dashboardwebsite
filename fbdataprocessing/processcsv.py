@@ -37,9 +37,11 @@ def loadDicts():
             if (row['pickitemstatusId']) == '5':
                 if(row['qtyonhand'] >= row['qty']):
                     row['pickitemstatusText'] = "Ready to Pick"
-            if ((row['pickitemstatusId']) == '10') or ((row['pickitemstatusId']) == '11'):
+                    row['pickitemstatusId'] = '10'
+            elif ((row['pickitemstatusId']) == '10') or ((row['pickitemstatusId']) == '11'):
                 if(row['qtyonhand'] <= row['qty']):
                     row['pickitemstatusText'] = "Short"
+                    row['pickitemstatusId'] = '5'
             #Turn status codes into readable english
             if (row['pickitemstatusId']) == '5':
                 row['pickitemstatusText'] = "Short"

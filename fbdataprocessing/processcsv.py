@@ -38,8 +38,9 @@ def loadDicts():
                 if(row['qtyonhand'] >= row['qty']):
                     row['pickitemstatusText'] = "Ready to Pick"
                     row['pickitemstatusId'] = '10'
+                    
             elif ((row['pickitemstatusId']) == '10') or ((row['pickitemstatusId']) == '11'):
-                if(row['qtyonhand'] <= row['qty']):
+                if(row['qtyonhand'] < row['qty']):
                     row['pickitemstatusText'] = "Short"
                     row['pickitemstatusId'] = '5'
             #Turn status codes into readable english
@@ -118,6 +119,8 @@ def committedDict():
         for subDict in soDict[so]:
             if(subDict['pickitemstatusId']=='30'):
                 templist.append(subDict)
+            elif(subDict['pickitemstatusId']==''):
+                pass
             else:
                 add = 1
         if add != 1:

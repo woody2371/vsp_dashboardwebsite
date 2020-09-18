@@ -7,19 +7,20 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3-theme-black.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/dashboard.css') }}">
+
 <body>
 <!-- Side Navigation -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-center" style="display:none" id="mySidebar">
   <h1 class="w3-xxxlarge w3-text-theme">Navigation</h1>
   <button class="w3-bar-item w3-button" onclick="w3_close()">Close <i class="fa fa-remove"></i></button>
-  <a href="index.html" class="w3-bar-item w3-button">Main Tab</a>
   <a href="#" class="w3-bar-item w3-button">All Open Orders</a>
-  <a href="#" class="w3-bar-item w3-button">Inventory Monitor</a>
+  <a href="/ignored_orders" class="w3-bar-item w3-button">Ignored Orders</a>
 </nav>
 
 <!-- Header -->
@@ -44,21 +45,25 @@
 <tr class="w3-theme">
   <th><a href='/pickBySales'>Sort by Sales Order</a></th>
   <th>Qty to Pick</th>
-  <th>Qty in Stock</th>
+  <th colspan="2">Qty in Stock</th>
 </tr>
 </thead>
 <tbody>
+<!--Create the Outstanding Picks table-->
 {% for product in pickDict %}
 <tr class="w3-large">
+	<!--Header row-->
   <td class="w3-left-align w3-blue-grey">{{ product[0:20] }}</td>
   {% set totalqty = pickDict[product]|sum(attribute='qty') %}
   <td class="w3-blue-grey w3-center"> {{ totalqty }} </td>
-  <td class="w3-blue-grey">{{ pickDict[product][0]['qtyonhand'] }}</td>
+  <td class="w3-blue-grey" colspan="2">{{ pickDict[product][0]['qtyonhand'] }}</td>
 </tr>
+<!--Data Rows-->
 {% for so in pickDict[product] %}
-<div id="{{ product }}" class="w3-hide">
+<divclass="w3-hide">
 <tr>
   <td class="w3-right">
+  <!--Popover link for the SO number/Customer number-->
   <a 
 						  href="javascript:void(0)" 
 						  data-toggle="popover" 
@@ -76,9 +81,10 @@
 							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
 							</table>
 							</div>
-							">{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>
+							"><!--Actual data for the SO line-->{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>
   <td class="w3-green w3-center">{{ so['qty'] }}</td>
-  <td>{{ so['qtyonhand'] }}</td>
+  <td>{{ so['qtyonhand'] }} </td>
+  <td class="rowId" id="{{ so['num'] + ',' + product }}"> <input type="hidden" class="sleep" /></td>
 </tr>
 {% endfor %}
 {% endfor %}
@@ -188,13 +194,40 @@
 
 <!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
 <script>
-//Popover 
+//Document Scripts 
 $(document).ready(function(){
+	//Popover
     $('[data-toggle="popover"]').popover({
 	html:true,
 	sanitize:false,
 	});
+	
+	//Datepicker + Sleep function
+    $(".sleep").datepicker({
+            changeMonth: true,
+            changeYear: true,
+			showOn: "button",
+			buttonText: "Sleep",
+			autoclose: true,
+			dateFormat: "dd/mm/yy",
+			onSelect: function(dateText, inst) {
+				var date = $(this).val();
+				var time = $('#time').val();
+				console.log(date)
+				var button = $(this), 
+					tr = button.closest('tr');
+				// find the ID stored in the .id cell
+				var sleepRow = tr.find('td.rowId');
+				$.ajax({
+					url: "delete_row",
+					type: "GET",
+					data: {row:sleepRow[0].id,dateUntil:date},
+				});
+				location.reload()
+			}
+    });
 });
+
 // Side navigation
 
 function w3_open() {
@@ -255,7 +288,9 @@ function move() {
       elem.innerHTML = width * 1  + '%';
     }
   }
-}
+};
+
+
 </script>
 
 </body>

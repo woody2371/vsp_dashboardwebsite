@@ -11,6 +11,7 @@ soDict = defaultdict(list)
 def loadDicts():
     productDict.clear()
     soDict.clear()
+    ignoreDict = loadIgnoreDict()
     """
     Generic function to load CSV data into the two dicts
     Expect to run this every time you want data to update
@@ -21,6 +22,13 @@ def loadDicts():
         exportReader = csv.DictReader(csvfile)
         # Sort data by product and by so
         for row in exportReader:
+            cleanIgnoreDict()
+            if checkIgnore(row['num'], row['productNum'], ignoreDict):
+                continue
+            if(row['num'] in ignoreDict.keys()):
+                for line in ignoreDict[row['num']]:
+                    if(line['product'] == row['productNum']):
+                        continue
             #No quantity returns null instead of zero - that doesn't work for displaying on a webpage
             if(row['qty'] == ''):
                 row['qty'] = '0'
@@ -104,6 +112,7 @@ def filtersoDict(column, data, match=True):
                 if(subDict[column] not in data):
                     returnDict[so].append(subDict)
     return returnDict
+
 def committedDict():
     """
     Returns all orders that are committed in full
@@ -128,10 +137,50 @@ def committedDict():
                 returnDict[so].append(i)
     return returnDict
 
+#Return the full SO dict
 def fullSoDict():
     return soDict
 
+#Return the full Product dict
 def fullProductDict():
     return productDict
 
-loadDicts()
+#Add a row to the ignore list
+def ignoreRow(row,date):
+    rowlist = row.split(',')
+    rowlist.append(date)
+    with open("static/dbexport/ignore.csv", mode='a+', newline='') as ignorecsv:
+        csv_writer = csv.writer(ignorecsv)
+        csv_writer.writerow(rowlist)
+
+def loadIgnoreDict():
+    ignoreDict = defaultdict(list)
+    with open("static/dbexport/ignore.csv", newline='') as ignorecsv:
+        ignoreReader = csv.DictReader(ignorecsv)
+        for row in ignoreReader:
+            ignoreDict[row['so']].append(row)
+        return ignoreDict
+
+def cleanIgnoreDict():
+    #Load data into a variable
+    with open("static/dbexport/ignore.csv", 'r') as ignorecsv:
+        data = list(csv.reader(ignorecsv))
+        #Close file
+    #Open file with write access
+    with open("static/dbexport/ignore.csv", 'w', newline='') as writecsv:
+        writer = csv.writer(writecsv)
+        writer.writerow(['so','product','date'])
+        for row in data[1:]:
+            try:
+                if datetime.strptime(row[2], '%d/%m/%Y') > datetime.now():
+                    writer.writerow(row)
+            except:
+                continue
+
+def checkIgnore(so, productNum, ignoreDict):
+    for row in ignoreDict[so]:
+        if row['product'] == productNum:
+            print(productNum + " was ignored for SO " + so)
+            return True
+    return False
+

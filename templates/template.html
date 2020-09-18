@@ -56,7 +56,8 @@
   <td class="w3-left-align w3-blue-grey">{{ product[0:20] }}</td>
   {% set totalqty = pickDict[product]|sum(attribute='qty') %}
   <td class="w3-blue-grey w3-center"> {{ totalqty }} </td>
-  <td class="w3-blue-grey" colspan="2">{{ pickDict[product][0]['qtyonhand'] }}</td>
+  <td class="w3-blue-grey w3-center">{{ pickDict[product][0]['qtyonhand'] }}</td>
+  <td class="w3-blue-grey"></td>
 </tr>
 <!--Data Rows-->
 {% for so in pickDict[product] %}
@@ -83,7 +84,7 @@
 							</div>
 							"><!--Actual data for the SO line-->{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>
   <td class="w3-green w3-center">{{ so['qty'] }}</td>
-  <td>{{ so['qtyonhand'] }} </td>
+  <td class="w3-center">{{ so['qtyonhand'] }} </td>
   <td class="rowId" id="{{ so['num'] + ',' + product }}"> <input type="hidden" class="sleep" /></td>
 </tr>
 {% endfor %}
@@ -207,7 +208,8 @@ $(document).ready(function(){
             changeMonth: true,
             changeYear: true,
 			showOn: "button",
-			buttonText: "Sleep",
+			buttonImage: "static/images/sleep.png",
+			buttonImageOnly: true,
 			autoclose: true,
 			dateFormat: "dd/mm/yy",
 			onSelect: function(dateText, inst) {

@@ -78,8 +78,9 @@
 								<th>Product</th>
 								<th>Qty</th>
 								<th>Status</th>
+								<th>Notes</th>
 							</tr>
-							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
+							{% for i in sodict %} {% if i==so['num'] %} {% for row in sodict[i] %} <tr><td>{{ row['productNum'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td><td>{{ row['note'] }}</td></tr>{% endfor %} {% endif %} {% endfor %}
 							</table>
 							</div>
 							"><!--Actual data for the SO line-->{{ so['billToName'][0:12] }} - SO{{ so['num'][0:10] }}</div></a></td>

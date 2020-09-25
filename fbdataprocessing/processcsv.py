@@ -22,7 +22,6 @@ def loadDicts():
         exportReader = csv.DictReader(csvfile)
         # Sort data by product and by so
         for row in exportReader:
-            cleanIgnoreDict()
             if checkIgnore(row['num'], row['productNum'], ignoreDict):
                 continue
             if(row['num'] in ignoreDict.keys()):
@@ -158,24 +157,9 @@ def loadIgnoreDict():
     with open("static/dbexport/ignore.csv", newline='') as ignorecsv:
         ignoreReader = csv.DictReader(ignorecsv)
         for row in ignoreReader:
-            ignoreDict[row['so']].append(row)
+            if datetime.strptime(row['date'], '%d/%m/%Y') > datetime.now():
+                ignoreDict[row['so']].append(row)
         return ignoreDict
-
-def cleanIgnoreDict():
-    #Load data into a variable
-    with open("static/dbexport/ignore.csv", 'r') as ignorecsv:
-        data = list(csv.reader(ignorecsv))
-        #Close file
-    #Open file with write access
-    with open("static/dbexport/ignore.csv", 'w', newline='') as writecsv:
-        writer = csv.writer(writecsv)
-        writer.writerow(['so','product','date'])
-        for row in data[1:]:
-            try:
-                if datetime.strptime(row[2], '%d/%m/%Y') > datetime.now():
-                    writer.writerow(row)
-            except:
-                continue
 
 def checkIgnore(so, productNum, ignoreDict):
     for row in ignoreDict[so]:

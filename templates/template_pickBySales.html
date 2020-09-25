@@ -73,8 +73,9 @@
 								<th>SO</th>
 								<th>Qty</th>
 								<th>Status</th>
+								<th>Notes</th>
 							</tr>
-							{% for i in productdict %} {% if i==product['productNum'] %} {% for row in productdict[i] %} <tr><td>{{ row['billToName'][0:10] }} - {{ row['num'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td></tr>{% endfor %} {% endif %} {% endfor %}
+							{% for i in productdict %} {% if i==product['productNum'] %} {% for row in productdict[i] %} <tr><td>{{ row['billToName'][0:10] }} - {{ row['num'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td><td>{{ row['note'] }}</td></tr>{% endfor %} {% endif %} {% endfor %}
 							</table>
 							</div>
 							">{{ product['productNum'][0:25] }}</div></a></td>

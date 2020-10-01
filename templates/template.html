@@ -226,7 +226,7 @@ $(document).ready(function(){
 					type: "GET",
 					data: {row:sleepRow[0].id,dateUntil:date},
 				});
-				location.reload()
+				setTimeout(function(){location.reload()}, 500);
 			}
     });
 });

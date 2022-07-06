@@ -8,6 +8,7 @@ import logging
 import traceback
 from lxml import etree
 
+import pandas as pd
 from statuscodes import getstatus
 import fishpost
 
@@ -23,25 +24,23 @@ def xmlparse(xml):
 	return root
 
 if(cfg['FB']['WAexportEnabled'] == "yes"):
-	try:
-		#Log into Fishbowl and return auth token
-		token = fishpost.login(cfg['FB']['host'], cfg['FB']['appName'], cfg['FB']['appDescription'], cfg['FB']['appId'], cfg['FB']['username'], cfg['FB']['password'])
-		#Download data - SQL query can be modified in config file
-		dataReturn = fishpost.dataQuery(cfg['FB']['host'], token, cfg['SQL']['WA'])
-		#Log out from Fishbowl
-		fishpost.logout(cfg['FB']['host'], token)
+	
+	#Log into Fishbowl and return auth token
+	token = fishpost.login(cfg['FB']['host'], cfg['FB']['appName'], cfg['FB']['appDescription'], cfg['FB']['appId'], cfg['FB']['username'], cfg['FB']['password'])
+	#Download data - SQL query can be modified in config file
+	dataReturn = fishpost.dataQuery(cfg['FB']['host'], token, cfg['SQL']['WA'])
+	#Log out from Fishbowl
+	fishpost.logout(cfg['FB']['host'], token)
 
-		with open(cfg['SYSTEM']['XMLwritepath']+'WAexport.csv', 'w', newline='') as exportFile:
-			try:
-			    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
-				    for line in xmlparse(dataReturn)[1][0][0]:
-					    exportFile.write(line.text + "\r\n")
-			    else:
-				    logging.error("WA Data export failed, instead of Rows dataReturn showed " + xmlparse(dataReturn)[1][0][0].tag)
-			except:
-			    logging.error(traceback.format_exc())
+	try: 
+		#Convert response to JSON, then normalize using Panda's library
+		json_data = pd.json_normalize(dataReturn.json())
+
+		#Use Panda's to_csv function to write the new export
+		json_data.to_csv(cfg['SYSTEM']['XMLwritepath']+'WAExport.csv', index=False)
+
 	except:
-	    logging.error(traceback.format_exc())
+		logging.error(traceback.format_exc())
 
 # if(cfg['FB']['QLDexportEnabled'] == "yes"):
 #     stream = Fishbowlapi(cfg['FB']['user'], cfg['FB']['passwd'], cfg['FB']['host'])

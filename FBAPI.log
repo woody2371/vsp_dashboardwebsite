@@ -19,3 +19,105 @@
   File "<string>", line 1
 lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
 
+2022-07-06 14:38:26,597 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:38:26,735 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 14:38:26,739 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:38:26,805 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 14:38:26,823 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:38:26,835 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 14:38:26,849 Traceback (most recent call last):
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 37, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 22, in xmlparse
+    root = etree.fromstring(xml)
+  File "src/lxml/etree.pyx", line 3254, in lxml.etree.fromstring
+  File "src/lxml/parser.pxi", line 1913, in lxml.etree._parseMemoryDocument
+  File "src/lxml/parser.pxi", line 1793, in lxml.etree._parseDoc
+  File "src/lxml/parser.pxi", line 1082, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src/lxml/parser.pxi", line 615, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src/lxml/parser.pxi", line 725, in lxml.etree._handleParseResult
+  File "src/lxml/parser.pxi", line 654, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+
+2022-07-06 14:40:26,720 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:40:26,870 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 14:40:26,877 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:40:26,953 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 14:40:26,967 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:40:26,977 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 14:40:27,711 Traceback (most recent call last):
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 37, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 22, in xmlparse
+    root = etree.fromstring(xml)
+  File "src/lxml/etree.pyx", line 3254, in lxml.etree.fromstring
+  File "src/lxml/parser.pxi", line 1913, in lxml.etree._parseMemoryDocument
+  File "src/lxml/parser.pxi", line 1793, in lxml.etree._parseDoc
+  File "src/lxml/parser.pxi", line 1082, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src/lxml/parser.pxi", line 615, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src/lxml/parser.pxi", line 725, in lxml.etree._handleParseResult
+  File "src/lxml/parser.pxi", line 654, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+
+2022-07-06 14:48:23,941 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:48:24,125 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 14:48:24,126 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:48:24,210 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 14:48:24,231 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:48:24,241 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 14:48:24,270 Traceback (most recent call last):
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 36, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 22, in xmlparse
+    root = etree.fromstring(xml)
+  File "src/lxml/etree.pyx", line 3254, in lxml.etree.fromstring
+  File "src/lxml/parser.pxi", line 1913, in lxml.etree._parseMemoryDocument
+  File "src/lxml/parser.pxi", line 1793, in lxml.etree._parseDoc
+  File "src/lxml/parser.pxi", line 1082, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src/lxml/parser.pxi", line 615, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src/lxml/parser.pxi", line 725, in lxml.etree._handleParseResult
+  File "src/lxml/parser.pxi", line 654, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+
+2022-07-06 14:54:56,106 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:54:56,258 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 14:54:56,259 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:54:56,332 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 14:54:56,359 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:54:56,370 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 14:54:56,388 Traceback (most recent call last):
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 37, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 23, in xmlparse
+    root = etree.fromstring(xml)
+  File "src/lxml/etree.pyx", line 3254, in lxml.etree.fromstring
+  File "src/lxml/parser.pxi", line 1913, in lxml.etree._parseMemoryDocument
+  File "src/lxml/parser.pxi", line 1793, in lxml.etree._parseDoc
+  File "src/lxml/parser.pxi", line 1082, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src/lxml/parser.pxi", line 615, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src/lxml/parser.pxi", line 725, in lxml.etree._handleParseResult
+  File "src/lxml/parser.pxi", line 654, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+
+2022-07-06 15:05:36,220 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:36,370 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 15:05:36,372 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:36,434 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 15:05:36,449 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:36,457 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 15:05:57,971 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:58,161 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 15:05:58,163 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:58,226 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 15:05:58,243 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:05:58,252 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 15:06:24,931 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:06:25,072 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 15:06:25,074 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:06:25,144 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 15:06:25,158 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 15:06:25,167 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0

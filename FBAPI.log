@@ -1,0 +1,21 @@
+2022-07-06 14:32:02,236 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:32:02,393 http://10.62.20.114:88 "POST /api/login HTTP/1.1" 200 None
+2022-07-06 14:32:02,394 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:32:02,468 http://10.62.20.114:88 "GET /api/data-query HTTP/1.1" 200 None
+2022-07-06 14:32:02,489 Starting new HTTP connection (1): 10.62.20.114:88
+2022-07-06 14:32:02,499 http://10.62.20.114:88 "POST /api/logout HTTP/1.1" 200 0
+2022-07-06 14:32:02,501 Traceback (most recent call last):
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 36, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+  File "/home/tom/Projects/vsp_dashboardwebsite/fbdataprocessing/fishwrapper.py", line 22, in xmlparse
+    root = etree.fromstring(xml)
+  File "src/lxml/etree.pyx", line 3254, in lxml.etree.fromstring
+  File "src/lxml/parser.pxi", line 1913, in lxml.etree._parseMemoryDocument
+  File "src/lxml/parser.pxi", line 1793, in lxml.etree._parseDoc
+  File "src/lxml/parser.pxi", line 1082, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src/lxml/parser.pxi", line 615, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src/lxml/parser.pxi", line 725, in lxml.etree._handleParseResult
+  File "src/lxml/parser.pxi", line 654, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+

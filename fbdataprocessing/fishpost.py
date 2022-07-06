@@ -3,8 +3,8 @@
 
 import requests
 
-#Set this to the URL of your Fishbowl webserver
-url = 'http://10.62.20.114:88/api/'
+#This URL is set in config.ini
+#url = 'http://10.62.20.114:88/api/'
 
 #Authenticate with Fishbowl - first time you will need to navigate to Integrations and accept the integration
 def login(url, appName, appDescription, appId, username, password):

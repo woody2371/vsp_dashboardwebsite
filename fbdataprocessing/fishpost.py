@@ -54,7 +54,6 @@ def dataQuery(url, token, sql):
 	return req
 
 
-
 ###EXAMPLE USAGE###
 
 #Log in to Fishbowl, returning the authorization token for later usage

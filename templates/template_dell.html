@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<meta http-equiv="refresh" content="5000">
+<html>
+<title>Dell ETA Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/w3-theme-black.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/dashboard.css') }}">
+
+<body>
+<!-- Side Navigation -->
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-center" style="display:none" id="mySidebar">
+  <h1 class="w3-xxxlarge w3-text-theme">Navigation</h1>
+  <button class="w3-bar-item w3-button" onclick="w3_close()">Close <i class="fa fa-remove"></i></button>
+  <a href="/" class="w3-bar-item w3-button">All Open Orders</a>
+  <a href="/ignored_orders" class="w3-bar-item w3-button">Ignored Orders</a>
+  <a href="/dell" class="w3-bar-item w3-button">Dell ETAs</a>
+</nav>
+
+<!-- Header -->
+<header class="w3-container w3-theme w3-padding" id="myHeader">
+  <i onclick="w3_open()" class="fa fa-bars w3-xlarge w3-button w3-theme"></i> 
+  <div class="w3-center">
+  <h1 class="w3-xxxlarge w3-animate-bottom">Dell ETA List</h1>
+  <h6> Last Updated {{ lastUpdated }} </h6>
+  </div>
+</header>
+
+<!-- Order ETAs -->
+<div class="w3-half w3-container">
+  <hr>
+  <div class="w3-center">
+    <h2>Outstanding Orders</h2>
+  </div>
+<div class="w3-responsive w3-card-4">
+<table class="w3-hoverable w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th>PO Number</th>
+  <th>Qty Incoming</th>
+  <th class="w3-center" >Approx ETA</th>
+  <th class="w3-center" >Date Shipped</th>
+  <th class="w3-center" >Tracking Link</th>
+</tr>
+</thead>
+<tbody>
+{% for order in orderDict %}
+<tr class="w3-large">
+  <td class="w3-left-align w3-blue-grey">PO: {{ orderDict[order][0][0]['Purchase Order Number'] }}, Dell Quote: {{ orderDict[order][0][0]['Quote Number'] }}</td>
+  <td class="w3-blue-grey w3-center"> </td>
+  <td class="w3-blue-grey w3-center" > </td>
+  <td class="w3-blue-grey w3-center" > </td>
+  <td class="w3-blue-grey w3-center" > </td>
+</tr>
+<div id="{{ orderDict[order][0][0]['Purchase Order Number'] }}" class="w3-hide">
+{% for line in orderDict[order] %}
+<tr>
+  <td class="w3-right">{% if line[0]['Actual Ship Date'] %}<a 
+              href="javascript:void(0)" 
+              data-toggle="popover" 
+              data-html="true" 
+              data-trigger="focus" 
+              title="<div class='w3-center w3-large'></div>" 
+              data-content="
+              <div class='w3-responsive'>
+              <table class='w3-table w3-striped w3-bordered'>
+              <tr>
+                <th>Service Tag</th>
+              </tr>
+              <tr>
+              <td>{{ line[0]['Service Tag'] }}</td>
+              </tr>
+              </table>
+              </div>
+              "> {% endif %} {{ line[0]['Product Description'][0:40] }}</td>{% if line[0]['Actual Ship Date'] %} </a> {% endif %}
+  <td class="w3-green w3-center">{{ line[0]['Order Quantity'] }}</td>
+  <td class='w3-center'>{{ line[0]['Estimated Delivery Date(EDD)'] }}</td>
+  <td class='w3-center {% if orderDict[order][0][0]["Actual Ship Date"] %}w3-green{% endif %}'> {{ line[0]['Actual Ship Date'] }}</td>
+  <td class='w3-center w3-button'>{% if line[0]['Track Your Order'] %}<a href='{{ line[0]['Track Your Order'] }}'><u>Track Me!</u></a> {% endif %}</td>
+</tr>
+{% endfor %}
+</div>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Recently Received Orders -->
+<div class="w3-half w3-container">
+  <hr>
+  <div class="w3-center">
+    <h2>Recently Received Orders</h2>
+  </div>
+<div class="w3-responsive w3-card-4">
+<table class="w3-hoverable w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th>PO Number</th>
+  <th>Qty Incoming</th>
+  <th class="w3-center" >Approx ETA</th>
+  <th class="w3-center" >Date Shipped</th>
+  <th class="w3-center" >Date Received</th>
+</tr>
+</thead>
+<tbody>
+{% for order in deliveredDict %}
+<tr class="w3-large">
+  <td class="w3-left-align w3-blue-grey">PO: {{ deliveredDict[order][0][0]['Purchase Order Number'] }}, Dell Quote: {{ deliveredDict[order][0][0]['Quote Number'] }}</td>
+  <td class="w3-blue-grey w3-center">  </td>
+  <td class="w3-blue-grey w3-center" > </td>
+  <td class="w3-blue-grey w3-center" > </td>
+  <td class="w3-blue-grey w3-center" > </td>
+</tr>
+<div class="w3-hide">
+{% for line in deliveredDict[order] %}
+<tr>
+  <td class="w3-right">  <a 
+              href="javascript:void(0)" 
+              data-toggle="popover" 
+              data-html="true" 
+              data-trigger="focus" 
+              title="<div class='w3-center w3-large'></div>" 
+              data-content="
+              <div class='w3-responsive'>
+              <table class='w3-table w3-striped w3-bordered'>
+              <tr>
+                <th>Service Tag</th>
+              </tr>
+              <tr>
+              <td>{{ line[0]['Service Tag'] }}</td>
+              </tr>
+              </table>
+              </div>
+              ">{{ line[0]['Product Description'][0:40] }}</a></td>
+  <td class="w3-green w3-center">{{ line[0]['Order Quantity'] }}</td>
+  <td class='w3-center'>{{ line[0]['Estimated Delivery Date(EDD)'] }}</td>
+  <td class='w3-center'> {{ line[0]['Actual Ship Date'] }}</td>
+  <td class='w3-center {% if line[0]["Actual Delivery Date"] %}w3-green{% endif %}'>{{ line[0]['Actual Delivery Date'] }}</td>
+</tr>
+{% endfor %}
+</div>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
+<script>
+//Popover 
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({
+  html:true,
+  sanitize:false,
+  });
+  });
+
+// Side navigation
+
+function w3_open() {
+  var x = document.getElementById("mySidebar");
+  x.style.width = "100%";
+  x.style.fontSize = "40px";
+  x.style.paddingTop = "10%";
+  x.style.display = "block";
+}
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+
+// Tabs
+function openCity(evt, cityName) {
+  var i;
+  var x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  var activebtn = document.getElementsByClassName("testbtn");
+  for (i = 0; i < x.length; i++) {
+    activebtn[i].className = activebtn[i].className.replace(" w3-dark-grey", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " w3-dark-grey";
+}
+
+// Accordions
+function showRows(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-hide") == -1) {
+    x.className += " w3-hide";
+  } else { 
+    x.className = x.className.replace(" w3-hide", "");
+  }
+}
+
+// Slideshows
+var slideIndex = 1;
+
+function plusDivs(n) {
+  slideIndex = slideIndex + n;
+  showDivs(slideIndex);
+}
+
+// Progress Bars
+function move() {
+  var elem = document.getElementById("myBar");   
+  var width = 5;
+  var id = setInterval(frame, 10);
+  function frame() {
+    if (width == 100) {
+      clearInterval(id);
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+      elem.innerHTML = width * 1  + '%';
+    }
+  }
+};
+
+
+</script>
+
+</body>
+</html>

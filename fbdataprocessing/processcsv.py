@@ -3,10 +3,15 @@
 import csv
 from collections import defaultdict
 from datetime import datetime
+import glob
+import os
 
 # Two dicts, one sorted by product and one sorted by so
 productDict = defaultdict(list)
 soDict = defaultdict(list)
+dellDict = defaultdict(list)
+dellPODict = defaultdict(list)
+dellDeliveredDict = defaultdict(list)
 
 def loadDicts():
     productDict.clear()
@@ -168,3 +173,51 @@ def checkIgnore(so, productNum, ignoreDict):
             return True
     return False
 
+def latestDellFile():
+    """
+    Generic function to identify the latest Dell export file
+    """
+    dellExport = 'static/dell/Orders*.csv'
+    listOfFiles = glob.glob(dellExport)
+    ret = max(listOfFiles, key=os.path.getctime)  
+    return ret  
+
+def loadDell():
+    dellDict.clear()
+    """
+    Generic function to load CSV data into the Dell dict
+    Expect to run this every time you want Dell data to update
+    """
+    #Define which Dell Order CSV to open
+    latestFile = latestDellFile()
+
+    with open(latestFile, newline='') as csvfile:
+        # Load CSV into a our reader module
+        exportReader = csv.DictReader(csvfile)
+        # Sort data by product and by so
+        for row in exportReader:
+            if row['Status'] != "Cancelled":
+                dellDict[row['Dell Order Number']].append(row)
+    return dellDict
+
+def loadDellPODict(dellDict=loadDell()):
+    dellPODict.clear()
+    """
+    Module to order the dellDict by VSP PO number, while filtering for only outstanding POs
+    """
+    for order in dellDict:
+        if len(dellDict[order][0]['Actual Delivery Date'])==0:
+            dellPODict[dellDict[order][0]['Purchase Order Number']].append(dellDict[order])
+
+    return dellPODict
+
+def loadDellDeliveredDict(dellDict=loadDell()):
+    dellDeliveredDict.clear()
+    """
+    Module to order the dellDict by VSP PO number, while filtering for only delivered POs
+    """
+    for order in dellDict:
+        if len(dellDict[order][0]['Actual Delivery Date'])>0:
+            dellDeliveredDict[dellDict[order][0]['Purchase Order Number']].append(dellDict[order])
+
+    return dellDeliveredDict

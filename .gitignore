@@ -1,3 +1,6 @@
 /static/*
 /venv
 /fbdataprocessing/static/*
+client_secrets.json
+docker-compose.yml
+static.zip

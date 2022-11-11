@@ -10,33 +10,34 @@ import os.path, time
 app = Flask(__name__)
 
 @app.route('/WA')
-def pickBySales():
+def pickBySalesWA():
     fbdata.loadDicts()
     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    return render_template('template.html', stateName="WA", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
-# @app.route('/QLD')
-# def pickBySales():
-#     fbdata.loadDicts()
-#     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-#     return render_template('template.html', pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+@app.route('/QLD')
+def pickBySalesQLD():
+    fbdata.loadDicts()
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
+    return render_template('template.html', stateName="QLD", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
-# @app.route('/SILVER')
-# def pickBySales():
-#     fbdata.loadDicts()
-#     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-#     return render_template('template.html', pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+@app.route('/SILVER')
+def pickBySalesSILVER():
+    fbdata.loadDicts()
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
+    return render_template('template.html', stateName="Silverwater", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
-# @app.route('/SP')
-# def pickBySales():
-#     fbdata.loadDicts()
-#     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-#     return render_template('template.html', pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+@app.route('/SP')
+def pickBySalesSP():
+    fbdata.loadDicts()
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
+    return render_template('template.html', stateName="St Peters", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
-# @app.route('/VIC')
-# def pickBySales():
-#     fbdata.loadDicts()
-#     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
+@app.route('/VIC')
+def pickBySalesVIC():
+    fbdata.loadDicts()
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
+    return render_template('template.html', stateName="VIC", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
 @app.route('/delete_row', methods=['GET'])
 def delete_row():

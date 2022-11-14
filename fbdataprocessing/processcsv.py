@@ -13,7 +13,7 @@ dellDict = defaultdict(list)
 dellPODict = defaultdict(list)
 dellDeliveredDict = defaultdict(list)
 
-def loadDicts():
+def loadDicts(state):
     productDict.clear()
     soDict.clear()
     ignoreDict = loadIgnoreDict()
@@ -22,7 +22,13 @@ def loadDicts():
     Expect to run this every time you want data to update
     TODO: figure out what happens if we're writing at the same time we read
     """
-    with open("static/dbexport/export.csv", newline='') as csvfile:
+    #Check which state we're loading data for
+    if state=="WA":
+        exportPath = "static/dbexport/WAexport.csv"
+    elif state=="QLD":
+        exportPath = "static/dbexport/QLDexport.csv"
+
+    with open(exportPath, newline='') as csvfile:
         # Load CSV into a our reader module
         exportReader = csv.DictReader(csvfile)
         # Sort data by product and by so
@@ -117,7 +123,7 @@ def filtersoDict(column, data, match=True):
                     returnDict[so].append(subDict)
     return returnDict
 
-def committedDict():
+def committedDict(pickItemStatus):
     """
     Returns all orders that are committed in full
     Example usage: committedDict() - Search for all committed in full orders
@@ -130,7 +136,7 @@ def committedDict():
         templist = []
         # TODO: Error handling if there is a keyerror via someone typing 'column' incorrectly
         for subDict in soDict[so]:
-            if(subDict['pickitemstatusId']=='30'):
+            if(subDict['pickitemstatusId']==pickItemStatus):
                 templist.append(subDict)
             elif(subDict['pickitemstatusId']==''):
                 pass

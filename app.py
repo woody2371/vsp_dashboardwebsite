@@ -1,13 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from jinja2 import Environment, PackageLoader, select_autoescape
 from datetime import datetime
 import fbdataprocessing.processcsv as fbdata
 import os.path, time
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return redirect("/WA")
 
 @app.route('/WA')
 def pickBySalesWA():
@@ -25,13 +29,13 @@ def pickBySalesQLD():
 def pickBySalesSILVER():
     fbdata.loadDicts("SILVER")
     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', stateName="Silverwater", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    return render_template('template.html', stateName="SILVER", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
 @app.route('/SP')
 def pickBySalesSP():
     fbdata.loadDicts("SP")
     lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', stateName="St Peters", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    return render_template('template.html', stateName="SP", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
 
 @app.route('/VIC')
 def pickBySalesVIC():
@@ -43,12 +47,13 @@ def pickBySalesVIC():
 def delete_row():
     row = request.args.get('row')
     date = request.args.get('dateUntil')
-    fbdata.ignoreRow(row,date)
+    state = request.args.get('state')
+    fbdata.ignoreRow(row,date,state)
     return 'foo'
 
-@app.route('/ignored_orders')
-def ignored_orders():
-    return render_template('template_ignored.html', ignoreDict=fbdata.loadIgnoreDict())
+@app.route('/ignored_orders/<state>')
+def ignored_orders(state="WA"):
+    return render_template('template_ignored.html', ignoreDict=fbdata.loadIgnoreDict(state))
 
 @app.route('/dell')
 def dell():

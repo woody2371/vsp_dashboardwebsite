@@ -22,10 +22,10 @@
   <button class="w3-bar-item w3-button" onclick="w3_close()">Close <i class="fa fa-remove"></i></button>
   <a href="/WA" class="w3-bar-item w3-button">WA Dashboard</a>
   <a href="/QLD" class="w3-bar-item w3-button">QLD Dashboard</a>
-  <a href="/SILVER" class="w3-bar-item w3-button">SILVER Dashboard</a>
+  <!--<a href="/SILVER" class="w3-bar-item w3-button">SILVER Dashboard</a>
   <a href="/SP" class="w3-bar-item w3-button">SP Dashboard</a>
-  <a href="/VIC" class="w3-bar-item w3-button">VIC Dashboard</a>
-  <a href="/ignored_orders" class="w3-bar-item w3-button">Ignored Orders</a>
+  <a href="/VIC" class="w3-bar-item w3-button">VIC Dashboard</a>-->
+  <a href="/ignored_orders/{{ stateName }}" class="w3-bar-item w3-button">Ignored Orders</a>
   <a href="/dell" class="w3-bar-item w3-button">Dell ETAs</a>
 </nav>
 
@@ -223,7 +223,7 @@ $(document).ready(function(){
         $.ajax({
           url: "delete_row",
           type: "GET",
-          data: {row:sleepRow[0].id,dateUntil:date},
+          data: {row:sleepRow[0].id,dateUntil:date,state:"{{ stateName }}"},
         });
         setTimeout(function(){location.reload()}, 500);
       }

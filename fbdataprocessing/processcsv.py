@@ -16,7 +16,7 @@ dellDeliveredDict = defaultdict(list)
 def loadDicts(state):
     productDict.clear()
     soDict.clear()
-    ignoreDict = loadIgnoreDict()
+    ignoreDict = loadIgnoreDict(state)
     """
     Generic function to load CSV data into the two dicts
     Expect to run this every time you want data to update
@@ -156,19 +156,21 @@ def fullProductDict():
     return productDict
 
 #Add a row to the ignore list
-def ignoreRow(row,date):
+def ignoreRow(row,date,state):
     rowlist = row.split(',')
     rowlist.append(date)
+    rowlist.append(state)
+    print("Rowlist*** " + str(rowlist) + "***END Rowlist")
     with open("static/dbexport/ignore.csv", mode='a+', newline='') as ignorecsv:
         csv_writer = csv.writer(ignorecsv)
         csv_writer.writerow(rowlist)
 
-def loadIgnoreDict():
+def loadIgnoreDict(state):
     ignoreDict = defaultdict(list)
     with open("static/dbexport/ignore.csv", newline='') as ignorecsv:
         ignoreReader = csv.DictReader(ignorecsv)
         for row in ignoreReader:
-            if datetime.strptime(row['date'], '%d/%m/%Y') > datetime.now():
+            if (datetime.strptime(row['date'], '%d/%m/%Y') > datetime.now()) and (row['state']==state):
                 ignoreDict[row['so']].append(row)
         return ignoreDict
 

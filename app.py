@@ -5,43 +5,51 @@ from flask import Flask, render_template, request, redirect
 from jinja2 import Environment, PackageLoader, select_autoescape
 from datetime import datetime
 import fbdataprocessing.processcsv as fbdata
-import os.path, time
+import os.path
+import time
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
     return redirect("/WA")
 
+
 @app.route('/WA')
 def pickBySalesWA():
     fbdata.loadDicts("WA")
-    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/WAexport.csv'))
-    return render_template('template.html', stateName="WA", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict("30"), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/dashboard.db'))
+    return render_template('template.html', stateName="WA", pickDict=fbdata.filtersoDict('pickitemstatusId', [10, 11], True), commitDict=fbdata.committedDict(30), backorderDict=fbdata.filterproductDict('pickitemstatusId', [5], True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+
 
 @app.route('/QLD')
 def pickBySalesQLD():
     fbdata.loadDicts("QLD")
-    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/QLDexport.csv'))
-    return render_template('template.html', stateName="QLD", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11','30'],True), commitDict=fbdata.committedDict("40"), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/dashboard.db'))
+    return render_template('template.html', stateName="QLD", pickDict=fbdata.filtersoDict('pickitemstatusId', [10, 11, 30], True), commitDict=fbdata.committedDict(40), backorderDict=fbdata.filterproductDict('pickitemstatusId', [5], True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+
 
 @app.route('/SILVER')
 def pickBySalesSILVER():
     fbdata.loadDicts("SILVER")
-    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', stateName="SILVER", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/dashboard.db'))
+    return render_template('template.html', stateName="SILVER", pickDict=fbdata.filtersoDict('pickitemstatusId', [10, 11], True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId', [5], True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+
 
 @app.route('/SP')
 def pickBySalesSP():
     fbdata.loadDicts("SP")
-    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', stateName="SP", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/dashboard.db'))
+    return render_template('template.html', stateName="SP", pickDict=fbdata.filtersoDict('pickitemstatusId', [10, 11], True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId', [5], True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+
 
 @app.route('/VIC')
 def pickBySalesVIC():
     fbdata.loadDicts("VIC")
-    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/export.csv'))
-    return render_template('template.html', stateName="VIC", pickDict=fbdata.filtersoDict('pickitemstatusId',['10','11'],True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId',['5'],True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+    lastUpdated = time.ctime(os.path.getmtime('static/dbexport/dashboard.db'))
+    return render_template('template.html', stateName="VIC", pickDict=fbdata.filtersoDict('pickitemstatusId', [10, 11], True), commitDict=fbdata.committedDict(), backorderDict=fbdata.filterproductDict('pickitemstatusId', [5], True), totalqty=0, date=datetime.today(), productdict=fbdata.fullProductDict(), lastUpdated=lastUpdated)
+
 
 @app.route('/delete_row', methods=['GET'])
 def delete_row():
@@ -51,9 +59,11 @@ def delete_row():
     fbdata.ignoreRow(row,date,state)
     return 'foo'
 
+
 @app.route('/ignored_orders/<state>')
 def ignored_orders(state="WA"):
     return render_template('template_ignored.html', ignoreDict=fbdata.loadIgnoreDict(state))
+
 
 @app.route('/dell')
 def dell():

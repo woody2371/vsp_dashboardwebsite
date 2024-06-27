@@ -1,11 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify, abort
 from jinja2 import Environment, PackageLoader, select_autoescape
 from datetime import datetime
+import json
 import fbdataprocessing.processcsv as fbdata
 import os.path, time
+
+# API Key Configuration
+api_db = {'dummykey': 'dell'}
 
 app = Flask(__name__)
 
@@ -59,3 +63,22 @@ def ignored_orders(state="WA"):
 def dell():
     lastUpdated = time.ctime(os.path.getmtime(fbdata.latestDellFile()))
     return render_template('template_dell.html', orderDict=fbdata.loadDellPODict(), deliveredDict=fbdata.loadDellDeliveredDict(), lastUpdated=lastUpdated)
+
+@app.route('/dellWebhook', methods=['POST'])
+def dellWebhook():
+    if request.method == 'POST':
+        api_key = request.json.get('api-key')
+        if not api_key or not api_db.get(api_key):
+            print("Invalid API Key Provided")
+            abort(401, 'Invalid API Key')
+
+        # #Authenticated - Start processing data
+        data = request.json
+        #Testing - just print data directly
+        with open("received_data.json", 'w') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+        return jsonify({'status': 'success', 'data': data}), 200
+    
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5006)

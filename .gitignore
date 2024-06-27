@@ -5,3 +5,4 @@ client_secrets.json
 docker-compose.yml
 static.zip
 FBAPI.log
+received_data.json

@@ -79,6 +79,3 @@ def dellWebhook():
             json.dump(data, f, ensure_ascii=False, indent=4)
 
         return jsonify({'status': 'success', 'data': data}), 200
-    
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5006)

@@ -64,18 +64,5 @@ def dell():
     lastUpdated = time.ctime(os.path.getmtime(fbdata.latestDellFile()))
     return render_template('template_dell.html', orderDict=fbdata.loadDellPODict(), deliveredDict=fbdata.loadDellDeliveredDict(), lastUpdated=lastUpdated)
 
-@app.route('/dellWebhook', methods=['POST'])
-def dellWebhook():
-    if request.method == 'POST':
-        api_key = request.json.get('api-key')
-        if not api_key or not api_db.get(api_key):
-            print("Invalid API Key Provided")
-            abort(401, 'Invalid API Key')
-
-        # #Authenticated - Start processing data
-        data = request.json
-        #Testing - just print data directly
-        with open("received_data.json", 'w') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-
-        return jsonify({'status': 'success', 'data': data}), 200
+# if __name__ == '__main__':
+#     app.run("10.62.22.179", 5006)

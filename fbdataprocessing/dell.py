@@ -7,8 +7,13 @@ import os
 import glob
 import csv
 from collections import defaultdict
+import configparser
 
 #Config
+cfg = configparser.ConfigParser()
+cfg.read('config.ini')
+
+#Old Config
 dellExport = 'static/dell/Orders*.csv'
 poExport = 'static/dell/WADashboardDELL.csv'
 
@@ -121,5 +126,10 @@ def filterOrderDict(column, data, match=True):
                     returnDict[product].append(subDict)
     return returnDict
 
-print(checkPO())
-input()
+def fetchOrders():
+    """
+    Module to fetch all current Dell orders using the Dell OrderStatus API.
+    Requires Dell client_id and client_secret to be configured in config.ini
+    """
+    client_id = cfg['DELL']['client_id']
+    client_id = cfg['DELL']['client_secret']

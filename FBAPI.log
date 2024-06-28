@@ -1,0 +1,131 @@
+2024-06-27 15:29:18,555 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:29:18,788 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 15:29:18,792 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:29:47,214 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 0
+2024-06-27 15:29:47,221 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:29:47,373 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 15:29:47,409 Traceback (most recent call last):
+  File "C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\fishwrapper.py", line 41, in <module>
+    df.to_csv(cfg['SYSTEM']['XMLwritepath']+'WAexport.csv', index=False)
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\util\_decorators.py", line 333, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 3967, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\formats\format.py", line 1014, in to_csv
+    csv_formatter.save()
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\formats\csvs.py", line 251, in save
+    with get_handle(
+         ^^^^^^^^^^^
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\common.py", line 749, in get_handle
+    check_parent_directory(str(handle))
+  File "c:\Users\tom\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\common.py", line 616, in check_parent_directory
+    raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+OSError: Cannot save file into a non-existent directory: 'C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\static\dbexport'
+
+2024-06-27 15:30:49,389 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:30:49,627 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 15:30:49,638 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:31:11,861 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 15:33:27,732 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:33:27,892 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 15:44:02,947 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:44:03,213 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 15:44:03,223 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 15:44:25,449 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 15:47:04,172 Encoding detection: utf_8 is most likely the one.
+2024-06-27 16:00:14,909 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:00:15,156 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:00:15,165 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:00:19,988 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:00:20,301 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:00:20,423 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:01:13,241 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:01:13,485 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:01:29,650 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:01:29,885 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:01:52,189 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:01:56,857 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:01:57,235 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:01:57,384 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:02:07,348 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:02:07,579 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:02:13,141 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:02:18,174 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:02:37,351 Encoding detection: ascii is most likely the one.
+2024-06-27 16:02:50,507 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:02:50,642 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:03:03,252 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:03:03,483 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:03:03,492 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:03:09,594 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:03:09,932 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:03:10,046 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:03:44,331 Encoding detection: ascii is most likely the one.
+2024-06-27 16:05:12,065 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:05:12,332 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:05:12,340 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:05:18,403 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:05:18,516 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:05:18,651 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:05:18,656 Traceback (most recent call last):
+  File "C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\fishwrapper.py", line 64, in <module>
+    if xmlparse(dataReturn.text)[1][0][0].tag == "Rows":
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\fishwrapper.py", line 45, in xmlparse
+    root = etree.fromstring(xml)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "src\\lxml\\etree.pyx", line 3307, in lxml.etree.fromstring
+  File "src\\lxml\\parser.pxi", line 1989, in lxml.etree._parseMemoryDocument
+  File "src\\lxml\\parser.pxi", line 1869, in lxml.etree._parseDoc
+  File "src\\lxml\\parser.pxi", line 1105, in lxml.etree._BaseParser._parseUnicodeDoc
+  File "src\\lxml\\parser.pxi", line 633, in lxml.etree._ParserContext._handleParseResultDoc
+  File "src\\lxml\\parser.pxi", line 743, in lxml.etree._handleParseResult
+  File "src\\lxml\\parser.pxi", line 672, in lxml.etree._raiseParseError
+  File "<string>", line 1
+lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
+
+2024-06-27 16:06:09,222 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:06:09,485 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:06:09,493 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:06:13,906 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:06:14,254 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:06:14,367 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:06:56,398 Encoding detection: ascii is most likely the one.
+2024-06-27 16:09:08,576 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:09:08,879 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:09:08,888 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:09:13,372 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:09:13,724 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:09:13,835 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-27 16:11:07,316 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:11:07,589 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-27 16:11:07,598 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:11:12,362 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-27 16:11:12,715 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-27 16:11:12,876 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-28 10:49:14,158 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 10:49:14,448 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-28 10:49:14,456 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 10:49:25,908 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-28 10:49:26,282 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 10:49:26,426 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-28 12:15:00,930 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:01,205 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-28 12:15:01,214 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:07,413 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-28 12:15:07,757 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:07,868 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-28 12:15:11,611 Traceback (most recent call last):
+  File "C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\fishwrapper.py", line 64, in <module>
+    df.to_sql(name=cfg['SYSTEM']['XMLwritepath']+'WAexport', con=engine)
+                                                                 ^^^^^^
+NameError: name 'engine' is not defined
+
+2024-06-28 13:23:51,964 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:23:52,213 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-28 13:23:52,218 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:24:01,021 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-28 13:24:01,132 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:24:01,242 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0

@@ -17,7 +17,7 @@ def login(url, appName, appDescription, appId, username, password):
 	#Define the API URL
 	reqURL = url + "login"
 	#Create post request
-	req = requests.post(reqURL, json = postData)
+	req = requests.post(reqURL, json = postData, timeout=10)
 	#Print the response message from Fishbowl WEB API
 	return req .json()['token']
 
@@ -48,7 +48,7 @@ def dataQuery(url, token, sql):
 	reqURL = url + "data-query"
 
 	#Create GET request, passing the SQL request. Timeout set at 10s due to the large quantity of data we can sometimes pull
-	req = requests.get(reqURL, headers = head, data = sql, timeout = 10)
+	req = requests.get(reqURL, headers = head, data = sql, timeout = 60)
 
 	#Return the response message from Fishbowl's data query
 	return req

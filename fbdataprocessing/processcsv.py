@@ -48,7 +48,7 @@ def loadDicts(state):
             row['qty'] = int(float(row['qty']))
             row['qtyonhand'] = int(float(row['qtyonhand']))
             #Pull just the date, don't care about time
-            row['dateLastModified'] = (row['dateLastModified'].split(" "))[0]
+            row['dateLastModified'] = (row['dateLastModified'].split("T"))[0]
             #Turn date into an actual datetime object
             row['dateLastModified'] = datetime.strptime(row['dateLastModified'], '%Y-%m-%d')
             #Error checking - Fishbowl is really bad at knowing whether items are short or not

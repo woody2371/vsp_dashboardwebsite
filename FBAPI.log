@@ -111,3 +111,21 @@ lxml.etree.XMLSyntaxError: Start tag expected, '<' not found, line 1, column 1
 2024-06-28 10:49:25,908 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
 2024-06-28 10:49:26,282 Starting new HTTP connection (1): 103.153.20.187:2456
 2024-06-28 10:49:26,426 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-28 12:15:00,930 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:01,205 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-28 12:15:01,214 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:07,413 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-28 12:15:07,757 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 12:15:07,868 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0
+2024-06-28 12:15:11,611 Traceback (most recent call last):
+  File "C:\Users\tom\OneDrive - Video Security Products Pty. Ltd\Documents\PythonDev\vsp_dashboardwebsite\fbdataprocessing\fishwrapper.py", line 64, in <module>
+    df.to_sql(name=cfg['SYSTEM']['XMLwritepath']+'WAexport', con=engine)
+                                                                 ^^^^^^
+NameError: name 'engine' is not defined
+
+2024-06-28 13:23:51,964 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:23:52,213 http://103.153.20.187:2456 "POST /api/login HTTP/1.1" 200 None
+2024-06-28 13:23:52,218 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:24:01,021 http://103.153.20.187:2456 "GET /api/data-query HTTP/1.1" 200 None
+2024-06-28 13:24:01,132 Starting new HTTP connection (1): 103.153.20.187:2456
+2024-06-28 13:24:01,242 http://103.153.20.187:2456 "POST /api/logout HTTP/1.1" 200 0

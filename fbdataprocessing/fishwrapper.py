@@ -1,17 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import struct
-import datetime
-import base64
 import configparser
 import logging
 import traceback
-from lxml import etree
-
 import pandas as pd
-from statuscodes import getstatus
 import fishpost
 import json
+import sqlite3
+
+from statuscodes import getstatus
 
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
@@ -59,8 +57,10 @@ if(cfg['FB']['WAexportEnabled'] == "yes"):
 		#Log out from Fishbowl
 		fishpost.logout(cfg['FB']['host'], token)
 
-        #Write data to CSV
+        #Move data to a pandas dataframe
 		df = pd.json_normalize(json.loads(dataReturn.text))
+		
+		#Write data to CSV
 		df.to_csv(cfg['SYSTEM']['XMLwritepath']+'WAexport.csv', index=False)
 
 	except:

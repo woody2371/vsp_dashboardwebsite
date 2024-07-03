@@ -41,5 +41,5 @@ def orderStatusSearch(url, token, key, values):
 
 ###EXAMPLE USAGE###
 
-#token = getOAuth'('https://apigtwb2c.us.dell.com/auth/oauth/v2/token', 'client_credentials', 'client_id_here', 'client_secret_here')
+#token = getOAuth('https://apigtwb2c.us.dell.com/auth/oauth/v2/token', 'client_credentials', 'client_id_here', 'client_secret_here')
 #results = orderStatusSearch('https://apigtwb2c.us.dell.com/PROD/order-status/api/search', token['access_token'], 'po_numbers', ['70417', '68789', '12365'])

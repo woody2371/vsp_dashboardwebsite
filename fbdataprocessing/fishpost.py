@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # Fishpost
 # Python tool to simplify interacting with Fishbowl's REST API
 

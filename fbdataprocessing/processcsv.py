@@ -5,6 +5,10 @@ from collections import defaultdict
 from datetime import datetime
 import glob
 import os
+import configparser
+
+cfg = configparser.ConfigParser()
+cfg.read('config.ini')
 
 # Two dicts, one sorted by product and one sorted by so
 productDict = defaultdict(list)
@@ -20,13 +24,9 @@ def loadDicts(state):
     """
     Generic function to load CSV data into the two dicts
     Expect to run this every time you want data to update
-    TODO: figure out what happens if we're writing at the same time we read
     """
-    #Check which state we're loading data for
-    if state=="WA":
-        exportPath = "static/dbexport/WAexport.csv"
-    elif state=="QLD":
-        exportPath = "static/dbexport/QLDexport.csv"
+
+    exportPath = cfg['SYSTEM']['XMLwritepath']+'{}export.csv'.format(state)
 
     with open(exportPath, newline='') as csvfile:
         # Load CSV into a our reader module

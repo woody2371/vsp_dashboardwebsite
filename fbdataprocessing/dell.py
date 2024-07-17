@@ -8,6 +8,12 @@ import glob
 import csv
 from collections import defaultdict
 import configparser
+import logging
+import traceback
+import json
+
+import fishpost
+import dellpost
 
 #Config
 cfg = configparser.ConfigParser()
@@ -45,91 +51,116 @@ poDict = defaultdict(list)
 joinedDict = defaultdict(list)
 checkPODict = {}
 
-#Load Dell Order Summary CSV
-def loadOrderDicts():
-    orderDict.clear()
-    with open(latestFile, newline='') as csvfile:
-        # Load CSV into a our reader module
-        exportReader = csv.DictReader(csvfile)
-        # Sort data by product and by key
-        for key, row in enumerate(exportReader):
-            row['key'] = key
-            orderDict[row['key']].append(row)
+dell_query = """
+SELECT num FROM po WHERE vendorId="44" and (statusId="10" or statusId="20" or statusId="30" or statusId="40" or statusId="50" or statusId="55")
+"""
 
-#Load Fishbowl PO Data Export CSV
-def loadPODicts():
-    poDict.clear()
-    with open(poExport, newline='') as csvfile:
-        # Load CSV into a our reader module
-        exportReader = csv.DictReader(csvfile)
-        # Sort data by product and by so
-        for key, row in enumerate(exportReader):
-            row['key'] = key
-            poDict[row['key']].append(row)
+def exportPO (query):
+    print("Pulling PO Numbers")
+    try:
+        #Log into Fishbowl and return auth token
+        print("Logging in")
+        token = fishpost.login(cfg['FB']['host'], cfg['FB']['appName'], cfg['FB']['appDescription'], cfg['FB']['appId'], cfg['FB']['username'], cfg['FB']['password'])
+        print("Logged in")
+        #Execute query
+        print("Downloading PO numbers")
+        dataReturn = fishpost.dataQuery(cfg['FB']['host'], token, query)
+        print("Data downloaded")
+        #Log out from Fishbowl
+        fishpost.logout(cfg['FB']['host'], token)
+        return dataReturn
+    except:
+        logging.error(traceback.format_exc())
+        return "Error"
+exportPO(dell_query)
 
-#Load a joined dictionary comparing values from the Order CSV and the PO CSV
-def loadJoinedDicts():
-    #Load prereq dicts
-    loadOrderDicts()
-    loadPODicts()
+json.loads(dataReturn.text)[0]['num']
+
+# #Load Dell Order Summary CSV
+# def loadOrderDicts():
+#     orderDict.clear()
+#     with open(latestFile, newline='') as csvfile:
+#         # Load CSV into a our reader module
+#         exportReader = csv.DictReader(csvfile)
+#         # Sort data by product and by key
+#         for key, row in enumerate(exportReader):
+#             row['key'] = key
+#             orderDict[row['key']].append(row)
+
+# #Load Fishbowl PO Data Export CSV
+# def loadPODicts():
+#     poDict.clear()
+#     with open(poExport, newline='') as csvfile:
+#         # Load CSV into a our reader module
+#         exportReader = csv.DictReader(csvfile)
+#         # Sort data by product and by so
+#         for key, row in enumerate(exportReader):
+#             row['key'] = key
+#             poDict[row['key']].append(row)
+
+# #Load a joined dictionary comparing values from the Order CSV and the PO CSV
+# def loadJoinedDicts():
+#     #Load prereq dicts
+#     loadOrderDicts()
+#     loadPODicts()
     
-    #Start template for joinedDict is PODict
-    joinedDict = poDict
+#     #Start template for joinedDict is PODict
+#     joinedDict = poDict
 
-    #Iterate through poDict and append with info from OrderDict
-    for key in joinedDict:
-        #joinedDict[key][0][]
-        return
+#     #Iterate through poDict and append with info from OrderDict
+#     for key in joinedDict:
+#         #joinedDict[key][0][]
+#         return
 
-#Verify that all POs in the system have been placed and that all Orders have a PO
-def checkPO():
-    loadPODicts()
-    loadOrderDicts()
+# #Verify that all POs in the system have been placed and that all Orders have a PO
+# def checkPO():
+#     loadPODicts()
+#     loadOrderDicts()
 
-    #Create a list of all POs that are in Fishbowl
-    for key in poDict:
-        if int(poDict[key][0]['qtyRemaining']) > 0:
-            checkPODict[poDict[key][0]['num']] = ""
+#     #Create a list of all POs that are in Fishbowl
+#     for key in poDict:
+#         if int(poDict[key][0]['qtyRemaining']) > 0:
+#             checkPODict[poDict[key][0]['num']] = ""
 
-    #Check the Order List against the previously created PO List
-    for key in orderDict:
-        try:
-            checkPODict[orderDict[key][0]['Purchase Order Number']] = orderDict[key][0]['Dell Order Number']
-        except:
-            checkPODict["Error, Dell Order #: "+orderDict[key][0]['Dell Order Number']] = "Error"
+#     #Check the Order List against the previously created PO List
+#     for key in orderDict:
+#         try:
+#             checkPODict[orderDict[key][0]['Purchase Order Number']] = orderDict[key][0]['Dell Order Number']
+#         except:
+#             checkPODict["Error, Dell Order #: "+orderDict[key][0]['Dell Order Number']] = "Error"
 
-    #Create a simple list of all errors to look at
-    errorList = []
-    for key in checkPODict:
-        if checkPODict[key] == "" or checkPODict[key] == "Error":
-            errorList.append(key)
+#     #Create a simple list of all errors to look at
+#     errorList = []
+#     for key in checkPODict:
+#         if checkPODict[key] == "" or checkPODict[key] == "Error":
+#             errorList.append(key)
 
-    return errorList
+#     return errorList
 
-def filterOrderDict(column, data, match=True):
-    """
-    Generic module to filter the sorted by product dict.
-    Column can be any header we import. Data can be a string or a list of what to search for. Match is a "NOT" flag
-    Example usage: filterproductDict('pickitemstatusId','5',True) - Search for all issued items not in stock
-    """
-    # We will return this dict of filtered data
-    returnDict = defaultdict(list)
-    # Iterate through the sorted dict & subdict to filter, then add that data to our filtered dict
-    for product in productDict:
-        # TODO: Error handling if there is a keyerror via someone typing 'column' incorrectly
-        for subDict in productDict[product]:
-            if match:
-                if(subDict[column] in data):
-                    returnDict[product].append(subDict)
-            else:
-                if(subDict[column] not in data):
-                    returnDict[product].append(subDict)
-    return returnDict
+# def filterOrderDict(column, data, match=True):
+#     """
+#     Generic module to filter the sorted by product dict.
+#     Column can be any header we import. Data can be a string or a list of what to search for. Match is a "NOT" flag
+#     Example usage: filterproductDict('pickitemstatusId','5',True) - Search for all issued items not in stock
+#     """
+#     # We will return this dict of filtered data
+#     returnDict = defaultdict(list)
+#     # Iterate through the sorted dict & subdict to filter, then add that data to our filtered dict
+#     for product in productDict:
+#         # TODO: Error handling if there is a keyerror via someone typing 'column' incorrectly
+#         for subDict in productDict[product]:
+#             if match:
+#                 if(subDict[column] in data):
+#                     returnDict[product].append(subDict)
+#             else:
+#                 if(subDict[column] not in data):
+#                     returnDict[product].append(subDict)
+#     return returnDict
 
-def fetchOrders():
-    """
-    Module to fetch all current Dell orders using the Dell OrderStatus API.
-    Requires Dell client_id and client_secret to be configured in config.ini
-    """
-    client_id = cfg['DELL']['client_id']
-    client_id = cfg['DELL']['client_secret']
+# def fetchOrders():
+#     """
+#     Module to fetch all current Dell orders using the Dell OrderStatus API.
+#     Requires Dell client_id and client_secret to be configured in config.ini
+#     """
+#     client_id = cfg['DELL']['client_id']
+#     client_id = cfg['DELL']['client_secret']

@@ -147,6 +147,33 @@ def committedDict(pickItemStatus):
                 returnDict[so].append(i)
     return returnDict
 
+def committedBySalesman(salesman):
+    """
+    Returns all orders that are committed in full, based on salesman
+    Example usage: committedBySalesman('VinceL') - Search for all committed in full orders for VinceL
+    """
+    # We will return this dict of filtered data
+    returnDict = defaultdict(list)
+    # Iterate through the sorted dict & subdict to filter, then add that data to our filtered dict
+    for so in soDict:
+        add = 0
+        templist = []
+        # TODO: Error handling if there is a keyerror via someone typing 'column' incorrectly
+        for subDict in soDict[so]:
+            if(subDict['pickitemstatusId']=='30'):
+                if((subDict['salesman'].lower()==salesman.lower()) or (salesman.lower() == "andrewh")):
+                    templist.append(subDict)
+                else:
+                    pass
+            elif(subDict['pickitemstatusId']==''):
+                pass
+            else:
+                add = 1
+        if add != 1:
+            for i in templist:
+                returnDict[so].append(i)
+    return returnDict
+
 #Return the full SO dict
 def fullSoDict():
     return soDict

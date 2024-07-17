@@ -83,7 +83,7 @@
               {% for i in productdict %} {% if i==product['productNum'] %} {% for row in productdict[i] %} <tr><td>{{ row['billToName'][0:10] }} - {{ row['num'][0:20] }}</td><td>{{ row['qty'] }} </td><td>{{ row['pickitemstatusText']}}</td><td>{{ row['note'] }}</td></tr>{% endfor %} {% endif %} {% endfor %}
               </table>
               </div>
-              ">{{ product['productNum'][0:25] }}</div></a></td>
+              ">{{ product['productNum'][0:32] }}</div></a></td>
   <td class="w3-green w3-center">{{ product['qty'] }}</td>
   <td class='w3-center'>{{ product['qtyonhand'] }}</td>
   <td class="rowId" id="{{ so + ',' + product['productNum'] }}"> <input type="hidden" class="sleep" /></td>

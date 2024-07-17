@@ -64,5 +64,6 @@ def dell():
     lastUpdated = time.ctime(os.path.getmtime(fbdata.latestDellFile()))
     return render_template('template_dell.html', orderDict=fbdata.loadDellPODict(), deliveredDict=fbdata.loadDellDeliveredDict(), lastUpdated=lastUpdated)
 
-# if __name__ == '__main__':
-#     app.run("10.62.22.179", 5006)
+###Use the below for testing only - do NOT run this as a production server###
+#if __name__ == '__main__':
+#    app.run("0.0.0.0", 5006)

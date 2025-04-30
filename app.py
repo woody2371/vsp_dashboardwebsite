@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request, redirect, jsonify, abort, send_from_directory
+from flask import Flask, render_template, request, redirect, jsonify, abort
 from jinja2 import Environment, PackageLoader, select_autoescape
 from datetime import datetime
 import json
@@ -11,10 +11,9 @@ import os, time
 # API Key Configuration
 api_db = {'dummykey': 'dell'}
 
-# Define our REACT build path
-REACT_BUILD_DIR = os.path.join(os.path.dirname(__file__), 'vsp_dashboard_frontend', 'build')
-
 app = Flask(__name__)
+app.json.sort_keys = False
+
 
 @app.route('/')
 def index():
@@ -58,6 +57,21 @@ def delete_row():
     fbdata.ignoreRow(row,date,state)
     return 'foo'
 
+@app.route('/api/delete_row', methods=['GET'])
+def api_delete_row():
+    row = request.args.get('row')
+    date = request.args.get('dateUntil')
+    state = request.args.get('state')
+    fbdata.ignoreRow(row,date,state)
+    return 'foo'
+
+@app.route('/api/ignored_orders/<state>')
+def api_ignored_orders(state="WA"):
+    ignoreDict = fbdata.loadIgnoreDict(state)
+    return jsonify({
+        "ignoreDict": ignoreDict
+    })
+
 @app.route('/ignored_orders/<state>')
 def ignored_orders(state="WA"):
     return render_template('template_ignored.html', ignoreDict=fbdata.loadIgnoreDict(state))
@@ -67,13 +81,16 @@ def dell():
     lastUpdated = time.ctime(os.path.getmtime(fbdata.latestDellFile()))
     return render_template('template_dell.html', orderDict=fbdata.loadDellPODict(), deliveredDict=fbdata.loadDellDeliveredDict(), lastUpdated=lastUpdated)
 
-@app.route('/api/<state>')
+@app.route('/api/dashboard/<state>')
 def api_dashboard(state):
+    print(state)
     fbdata.loadDicts(state)
+    print(os.path.dirname('static'))
     return jsonify({
         "pickDict": fbdata.filtersoDict('pickitemstatusId', ['10','11'], True),
         "commitDict": fbdata.committedDict("30"),
-        "backorderDict": fbdata.filterproductDict('pickitemstatusId', ['5'], True)
+        "backorderDict": fbdata.filterproductDict('pickitemstatusId', ['5'], True),
+        "lastUpdated": time.ctime(os.path.getmtime('static/dbexport/WAexport.csv'))
     })
 
 ###Use the below for testing only - do NOT run this as a production server###

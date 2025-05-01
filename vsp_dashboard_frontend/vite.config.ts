@@ -7,12 +7,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+//http://dashboard.com/config
 export default defineConfig({
   server: {
-    port: 5173,
-    proxy: {
+    port: 8001,
+    proxy: { //Internal only API running via flask
       "/api": {
-        target: "http://127.0.0.1:5006",
+        target: "http://127.0.0.1:8000",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/api"),
       }
@@ -23,5 +24,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+  base: "/",
+  build: {
+    manifest: true, //For nginx integration
   },
 });

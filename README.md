@@ -1,6 +1,9 @@
-This is a Dashboard (written using flask & jinja2 for the API backend, and Vite for the frontend) designed to interface into the Fishbowl Inventory API backend.
+This is a Dashboard (written using flask for the API backend, and Vite for the frontend) designed to interface into the Fishbowl Inventory API backend.
 
-Fishwrapper.py is the backend for pulling data, and should be scheduled separately.
+Fishwrapper.py is the backend for pulling data, and should be added as a cron job separately.
+
+API runs on port 8000, intended to not be publicly exposed.
+Frontend runs on port 8001
 
 Currently shows:
 

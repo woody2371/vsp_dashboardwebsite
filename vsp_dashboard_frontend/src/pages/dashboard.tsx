@@ -80,7 +80,7 @@ const Dashboard: React.FC<dashboardProps> = ({ stateName }) => {
 
   const fetchAllData = async () => {
     try {
-      const res = await fetch(`/api/dashboard/${stateName}`);
+      const res = await fetch(`/api/dashboard/${stateName.toUpperCase()}`);
       const json: apiResponse = await res.json();
       setPickData(json.pickDict);
       setCommitData(json.commitDict);

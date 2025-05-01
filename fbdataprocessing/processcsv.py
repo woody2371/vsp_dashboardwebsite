@@ -145,7 +145,9 @@ def committedDict(pickItemStatus):
         if add != 1:
             for i in templist:
                 returnDict[so].append(i)
-    return returnDict
+    # Sort the entire dict by dateLastModified of the first item in each list
+    sorted_returnDict = dict(sorted(returnDict.items(),key=lambda item: item[1][0]['dateLastModified'] if item[1] else datetime.datetime.min))
+    return sorted_returnDict
 
 def committedBySalesman(salesman):
     """
@@ -168,6 +170,7 @@ def committedBySalesman(salesman):
             elif(subDict['pickitemstatusId']==''):
                 pass
             else:
+                #This indicates that the pickitemstatusId was something other than 30 - E.G there is an uncommitted item in the list
                 add = 1
         if add != 1:
             for i in templist:
@@ -197,8 +200,13 @@ def loadIgnoreDict(state):
     with open("static/dbexport/ignore.csv", newline='') as ignorecsv:
         ignoreReader = csv.DictReader(ignorecsv)
         for row in ignoreReader:
-            if (datetime.strptime(row['date'], '%d/%m/%Y') > datetime.now()) and (row['state']==state):
-                ignoreDict[row['so']].append(row)
+            print(row)
+            try:
+                if (datetime.strptime(row['date'], '%d/%m/%Y') > datetime.now()) and (row['state'].lower()==state.lower()):
+                    ignoreDict[row['so']].append(row)
+            except ValueError as ve: #Usually because the ignore.csv has been tampered with, or is empty
+                print(f'IgnoreDict responded with an invalid value')
+                continue
         return ignoreDict
 
 def checkIgnore(so, productNum, ignoreDict):

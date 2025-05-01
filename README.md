@@ -1,7 +1,9 @@
-THIS IS AN UPDATE TO CONVERT DELL TO USE API TO DOWNLOAD DATA INSTEAD OF MANUAL IMPORT
+This is a Dashboard (written using flask for the API backend, and Vite for the frontend) designed to interface into the Fishbowl Inventory API backend.
 
-This is a Dashboard (written using flask & jinja2) designed to interface into the Fishbowl Inventory API backend.
-You can find the backend files at https://github.com/woody2371/fishbowl-api
+Fishwrapper.py is the backend for pulling data, and should be added as a cron job separately.
+
+API runs on port 8000, intended to not be publicly exposed.
+Frontend runs on port 8001
 
 Currently shows:
 

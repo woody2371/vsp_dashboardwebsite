@@ -8,3 +8,32 @@ FBAPI.log
 received_data.json
 config.ini
 /_pycache_/
+
+*.cpython*
+FBAPI.log
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Local environment variables
+.env.local
+.env.*.local
+
+# Log files
+*.log
+
+# Vite cache
+.vite/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# MacOS
+.DS_Store

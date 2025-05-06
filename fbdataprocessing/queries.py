@@ -3,7 +3,7 @@
 query = {}
 
 query["WA"] = """
-SELECT so.num, soitem.productNum, so.billToName, pickitem.qty, qtyinventory.qtyonhand - qtycommitted.qty as qtyonhand, qtyinventory.qtyonorderpo, qtyinventory.qtyonorderto, (qtyinventory.qtyonorderpo + qtyinventory.qtyonorderto) as qtyonordertotal,soitem.statusId as soitemstatusId, so.statusId as sostatusId, pickitem.statusId as pickitemstatusId, soitem.typeId as soitemtypeId, soitem.dateLastModified, soitem.note, so.salesman, pick.locationgroupid
+SELECT so.num, soitem.productNum, so.billToName, pickitem.qty, qtyinventory.qtyonhand - qtycommitted.qty as qtyonhand, qtyinventory.qtyonorderpo, qtyinventory.qtyonorderto, (qtyinventory.qtyonorderpo + qtyinventory.qtyonorderto) as qtyonordertotal,soitem.statusId as soitemstatusId, so.statusId as sostatusId, pickitem.statusId as pickitemstatusId, soitem.typeId as soitemtypeId, soitem.dateLastModified, soitem.note, so.salesman, pick.locationgroupid, so.dateIssued
 FROM soitem
 LEFT JOIN so
     ON so.id = soitem.soid
@@ -22,6 +22,7 @@ AND (soitem.statusId LIKE "10" OR soitem.statusId LIKE "30" OR soitem.statusId L
 AND (so.statusId LIKE "20" OR so.statusId LIKE "25")
 AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%")
 AND soitem.typeId NOT LIKE ("90")
+ORDER BY so.dateIssued
 """
 
 query["QLD"] = """

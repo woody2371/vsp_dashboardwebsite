@@ -58,9 +58,12 @@ def loadDicts(state):
                     row['pickitemstatusId'] = '10'
                     
             elif ((row['pickitemstatusId']) == '10') or ((row['pickitemstatusId']) == '11'):
-                if(row['qtyonhand'] < row['qty']):
+                if((row['qtyonhand'] < row['qty']) and (row['qtyonhand'] > 0)):
                     row['pickitemstatusText'] = "Ready to Pick"
                     row['qty'] = row['qtyonhand']
+                elif((row['qtyonhand'] < row['qty']) and (row['qtyonhand'] == 0)):
+                    row['pickitemstatusText'] = "Short"
+                    row['pickitemstatusId'] = '5'
             #Turn status codes into readable english
             if (row['pickitemstatusId']) == '5':
                 row['pickitemstatusText'] = "Short"
@@ -264,3 +267,5 @@ def loadDellDeliveredDict(dellDict=loadDell()):
             dellDeliveredDict[dellDict[order][0]['Purchase Order Number']].append(dellDict[order])
 
     return dellDeliveredDict
+
+loadDicts("WA")

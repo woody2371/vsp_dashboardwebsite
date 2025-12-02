@@ -1,45 +1,80 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Python tool to simplify interacting with Dell's API 3.0
-# More details can be found here: https://developer.dell.com/apis/bea0b0d7-239f-4ee7-b3ff-6ffe6c35ccc4/versions/3.0.0/Order_Status_Pull_API_3.0.0.json
-
 import requests
+from dateutil import parser
 
-#Send ID & Secret to Dell to obtain OAuth Token
-def getOAuth(url, grant_type, client_id, client_secret):
-    #Usage: 
-    ###Send ID & Secret to Dell###
+# --- Dell API Configuration ---
+# Documentation: https://developer.dell.com/apis/bea0b0d7-239f-4ee7-b3ff-6ffe6c35ccc4/versions/3.0.0/Order_Status_Pull_API_3.0.0.json
 
-    #Create json data packet for POST request, based on the data passed to the function
-	#Supported values for grant_type are: "client_credentials", "password"
-	postData = {'grant_type': grant_type, 'client_id': client_id, 'client_secret': client_secret}
-	#Create post request
-	req = requests.post(url, data= postData, timeout=10)
-	#Print the response message from Dell API
-	#Expected response is access_token, token_type, expires_in, scope
-	return req .json()
+def get_token(url, client_id, client_secret):
+    """
+    Authenticates with Dell and returns the Access Token.
+    """
+    postData = {
+        'grant_type': 'client_credentials', 
+        'client_id': client_id, 
+        'client_secret': client_secret
+    }
+    
+    try:
+        req = requests.post(url, data=postData, timeout=10)
+        req.raise_for_status() # Raises error for 400/500 codes
+        return req.json().get('access_token')
+    except Exception as e:
+        print(f"Dell Auth Error: {e}")
+        return None
 
-def orderStatusSearch(url, token, key, values):
-	#Usage: token is the returned value from login(), key is what to search by, values is a list of values to search
-	#Possible values:
-	#
-	###Execute a search by key, and return the data###
+def search_orders(url, token, po_numbers):
+    """
+    Searches for a list of PO numbers.
+    po_numbers: A list of strings, e.g., ['1001', '1002']
+    """
+    head = {
+        'Authorization': "Bearer " + token, 
+        'Content-Type': 'application/json'
+    }
+    
+    #FYI Dell API has a limit of 10 values at once
+    data = {
+        "searchParameter": [
+            {"key": "po_numbers", "values": po_numbers}
+        ]
+    }
 
-	#Set the header for authentication
-	head = {'Authorization': "Bearer " + token, 'Content-Type': 'application/json'}
-	###Example ###
-	#key = 'po_numbers'
-	#values = ['61576', '70576']
-	data = {"SearchParameter": [{"key": key, "values": values }]}
+    try:
+        req = requests.post(url, headers=head, json=data, timeout=30)
+        req.raise_for_status()
+        return req.json()
+    except requests.exceptions.HTTPError as e:
+        print(f"Dell API Error: {e}")
+        return None
 
-	#Create POST request, passing the Search Parameters. Timeout set at 30s due to the large quantity of data we can sometimes pull
-	req = requests.post(url, headers = head, json = data, timeout = 30)
-
-	#Return the response message from Dell
-	return req
-
-###EXAMPLE USAGE###
-
-#token = getOAuth('https://apigtwb2c.us.dell.com/auth/oauth/v2/token', 'client_credentials', 'client_id_here', 'client_secret_here')
-#results = orderStatusSearch('https://apigtwb2c.us.dell.com/PROD/order-status/api/search', token['access_token'], 'po_numbers', ['70417', '68789', '12365'])
+def get_max_eta(dell_order):
+    """
+    Parses a single Dell Order object.
+    Loops through all line items to find the furthest 'estimatedDeliveryDate'.
+    Returns: A datetime object or None.
+    """
+    dates = []
+    notes = ""
+    ret = {}
+    
+    #Iterate through each line - each Dell PO can have multiple line items
+    for line in dell_order['dellOrders']:
+        #Check dates and grab the one that is most relevant. Actual > Revised > Estimated
+        if(line['actualDeliveryDate']):
+            dt = parser.parse(line['actualDeliveryDate'])
+        elif(line['revisedDeliveryDate']):
+            dt = parser.parse(line['revisedDeliveryDate'])
+        else:
+            dt = parser.parse(line['estimatedDeliveryDate'])
+        dates.append(dt)
+        notes = notes + "\n" + line['orderStatus']    
+    if not dates:
+        return None
+        
+    # Return the maximum (furthest) date found
+    ret['max_eta'] = max(dates)
+    ret['notes'] = notes
+    return ret

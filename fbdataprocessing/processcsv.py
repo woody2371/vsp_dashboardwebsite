@@ -267,5 +267,3 @@ def loadDellDeliveredDict(dellDict=loadDell()):
             dellDeliveredDict[dellDict[order][0]['Purchase Order Number']].append(dellDict[order])
 
     return dellDeliveredDict
-
-loadDicts("WA")

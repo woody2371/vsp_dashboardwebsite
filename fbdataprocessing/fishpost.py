@@ -56,7 +56,42 @@ def dataQuery(url, token, sql):
 	#Return the response message from Fishbowl's data query
 	return req
 
+def loadObject(url, token, module, obj_id):
+    #Usage: token is the returned value from login(), module is which Fishbowl module to use, obj_id is the search term
+    #
+    #Example: loadObject(url, token, 'purchase-orders', '77913')
+    ###Retrieve an object from Fishbowl
 
+	#Debug
+    print(f"Loading PO ID {obj_id}")
+    #Set header for authentication
+    head = {'Authorization': "Bearer " + token}
+    
+	#Define the API url
+    reqURL = f"{url}{module}/{obj_id}"
+    
+	#Create the GET request, passing our URL above
+    req = requests.get(reqURL, headers=head, timeout=10)
+
+    return req
+
+def saveObject(url, token, module, data_obj, id):
+    #Set header for authentication
+    head = {'Authorization': "Bearer " + token, 'Content-Type': 'application/json'}
+    #Define the API url
+    reqURL = f"{url}{module}/{id}"
+    
+    payload = data_obj.copy()
+    payload.pop('id', None) #Remove ID - seems to cause issues??
+    req = requests.post(reqURL, headers=head, json = data_obj, timeout=10)
+    
+    if req.status_code == 200:
+        return True
+    else:
+        print(f"Error Saving Object: Status {req.status_code}")
+        print(f"Response: {req.text}")
+        return False
+    
 ###EXAMPLE USAGE###
 
 #Log in to Fishbowl, returning the authorization token for later usage

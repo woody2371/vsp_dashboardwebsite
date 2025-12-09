@@ -4,17 +4,15 @@
 import requests
 from dateutil import parser
 
-# --- Dell API Configuration ---
-# Documentation: https://developer.dell.com/apis/bea0b0d7-239f-4ee7-b3ff-6ffe6c35ccc4/versions/3.0.0/Order_Status_Pull_API_3.0.0.json
-
 def get_token(url, client_id, client_secret):
-    """
-    Authenticates with Dell and returns the Access Token.
-    """
+    #
+    #Authenticates with Dell's API endpoint and returns the Access Token.
+    ###
+
     postData = {
         'grant_type': 'client_credentials', 
-        'client_id': client_id, 
-        'client_secret': client_secret
+        'client_id': client_id, #Set in config.ini
+        'client_secret': client_secret #Set in config.ini
     }
     
     try:
@@ -26,21 +24,15 @@ def get_token(url, client_id, client_secret):
         return None
 
 def search_orders(url, token, po_numbers):
-    """
-    Searches for a list of PO numbers.
-    po_numbers: A list of strings, e.g., ['1001', '1002']
-    """
-    head = {
-        'Authorization': "Bearer " + token, 
-        'Content-Type': 'application/json'
-    }
+    #
+    #Searches for a list of PO numbers.
+    #po_numbers: A list of strings, e.g., ['1001', '1002']
+    ###
+
+    head = {'Authorization': "Bearer " + token, 'Content-Type': 'application/json'} #Set headers
     
     #FYI Dell API has a limit of 10 values at once
-    data = {
-        "searchParameter": [
-            {"key": "po_numbers", "values": po_numbers}
-        ]
-    }
+    data = {"searchParameter": [{"key": "po_numbers", "values": po_numbers}]}
 
     try:
         req = requests.post(url, headers=head, json=data, timeout=30)

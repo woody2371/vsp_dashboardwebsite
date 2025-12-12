@@ -3,6 +3,14 @@
 
 import requests
 from dateutil import parser
+import logging
+import configparser
+# Config
+cfg = configparser.ConfigParser()
+cfg.read('config.ini')
+
+#Logs to DELLAPI.log in the script folder
+logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
 
 def get_token(url, client_id, client_secret):
     #
@@ -14,14 +22,18 @@ def get_token(url, client_id, client_secret):
         'client_id': client_id, #Set in config.ini
         'client_secret': client_secret #Set in config.ini
     }
-    
-    try:
-        req = requests.post(url, data=postData, timeout=10)
-        req.raise_for_status() # Raises error for 400/500 codes
-        return req.json().get('access_token')
-    except Exception as e:
-        print(f"Dell Auth Error: {e}")
-        return None
+    i = 0
+    while i < 5:
+        #Try logging in until we've tried 5 times or succeeded. Dell's API times out sometimes.
+        i += 1
+        print(f"Attempting to Auth with Dell. Attempt #: {i}")
+        try:
+            req = requests.post(url, data=postData, timeout=10)
+            req.raise_for_status() # Raises error for 400/500 codes
+            return req.json().get('access_token')
+        except Exception as e:
+            print(f"Dell Auth Error: {e}")
+            logging.error(e)
 
 def search_orders(url, token, po_numbers):
     #

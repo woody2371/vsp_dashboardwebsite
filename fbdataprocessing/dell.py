@@ -6,13 +6,14 @@ import dellpost
 import configparser
 import logging
 import traceback
+from emailSender import createMsgGeneric, sendEmail
 import json
-from dellpost import get_max_eta
 
 # Config
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
 
+#Logs to DELLAPI.log in the script folder
 logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
 
 def main():
@@ -64,7 +65,7 @@ def main():
         return
 
     if not fb_orders:
-        print("No open Dell PO Items found in Fishbowl or data query returned empty. Exiting.")
+        print("No open Dell PO Items found in Fishbowl or data query returned empty.")
         fishpost.logout(fb_host, fb_token)
         return
 
@@ -95,7 +96,7 @@ def main():
         return
 
     if not dell_token:
-        print("Could not log into Dell. Exiting.")
+        print("Could not log into Dell.")
         fishpost.logout(fb_host, fb_token)
         return
 
@@ -103,11 +104,6 @@ def main():
     all_dell_orders = [] #List of all our results
     
     search_url = cfg['DELL'].get('search_url')
-    
-    if not po_numbers_list: #Check if somehow we have no Dell POs
-        print("No POs to check.")
-        fishpost.logout(fb_host, fb_token)
-        return
         
     print("Querying Dell Order Status")
 
@@ -137,15 +133,28 @@ def main():
     print("Updating Fishbowl")
     
     dell_orders_list = dell_results['purchaseOrderDetails']
+    cancelled_po_list = [] #Keep track of any POs that are listed as cancelled in Dell's Order API
 
     for dell_order in dell_orders_list:
         dell_po_num = dell_order['purchaseOrderNumber']
         
         # Calculate longest lead time (because we can't know which item is which)
-        max_eta_resp = get_max_eta(dell_order) #returns a dict of two values: the highest ETA, and some info for notes field
+        max_eta_resp = dellpost.get_max_eta(dell_order) #returns a dict of two values: the highest ETA, and some info for notes field
         max_eta = max_eta_resp['max_eta']
         notes = max_eta_resp['notes']
-        
+
+        #Check if the order is cancelled and still exists in our list of issued POs
+        if notes == "Cancelled" and dell_po_num in po_numbers_list: 
+            cancelled_po_list.append(dell_po_num)
+
+        #Check if the Dell PO is in the list of Fishbowl POs. If it is, remove it from our list.
+        #At the end of the file, the remaining PO numbers will be emailed as an alert to the Dell PM
+        try:
+            po_numbers_list.remove(dell_po_num)
+        except ValueError as e:
+            print("Couldn't find Fishbowl PO to match")
+            logging.error(f"Error on matching Dell PO to Fishbowl: {e}")
+
         if max_eta and dell_po_num in po_map:
             new_date_str = max_eta.strftime('%Y-%m-%dT00:00:00.000+10')
             
@@ -166,6 +175,8 @@ def main():
                 # Check if date needs updating
                 if po_obj:#['dateScheduled'][:10] != new_date_str[:10]:
                     #Update Date Scheduled (top of PO)
+                    #Remove the check condition so we update status all the time
+                    old_date_str = po_obj['dateScheduled']
                     po_obj['dateScheduled'] = new_date_str
                     
                     #Sync line items - even though we don't really know their ETAs
@@ -196,9 +207,11 @@ def main():
                             item.pop('id', None)
                             item.pop('quantityFulfilled', None)  
                             item.pop('quantityPicked', None)     
-                            item.pop('status', None)             
-                    
-                    print(f"Updating PO {dell_po_num} scheduled date to {new_date_str}")
+                            item.pop('status', None)        
+
+                    print(f"Updating: PO {dell_po_num}")
+                    print(f"Old Date: {old_date_str}")
+                    print(f"New Date: {new_date_str}")
                     
                     #Save PO
                     if po_obj['number']:
@@ -217,6 +230,38 @@ def main():
             print(f"Skipping PO {dell_po_num} (No ETA or not found in Fishbowl)")
             
     fishpost.logout(fb_host, fb_token)
+
+    #Send email with remaining PO numbers to Dell PM
+    if po_numbers_list: #Check if any POs are left in Fishbowl that don't have a matching Dell Order Placed
+        try:       
+            sendEmail(
+                createMsgGeneric(
+                    "Error: Dell POs haven't been placed", #Subject
+                    "tom@vspsolutions.com.au", #From: Email Address
+                    "dell@vspsolutions.com.au", #To: Email Address
+                    f"The following POs haven't been placed: {po_numbers_list}" #Email body
+                    )
+                )
+            print(f"Sent email warning that POs {po_numbers_list} weren't showing in Dell's Order Status")
+        except Exception as e:
+            logging.error(f"Error sending email for missing POs: {e}")
+
+    if cancelled_po_list:
+        #Send email alerting if we have cancelled orders in Dell's Order Status
+        #POs must be still issued in Fishbowl
+        ###
+        try:
+            sendEmail(
+            createMsgGeneric(
+                "Error: Dell POs have been cancelled", #Subject
+                "tom@vspsolutions.com.au", #From: Email Address
+                "dell@vspsolutions.com.au", #To: Email Address
+                f"The following POs have been cancelled: {cancelled_po_list}" #Email body
+                )
+            )
+            print(f"Sent email warning that POs {cancelled_po_list} are showing as cancelled")
+        except Exception as e:
+            logging.error(f"Error sending email for cancelled POs: {e}")
     print("Finish")
 
 if __name__ == "__main__":

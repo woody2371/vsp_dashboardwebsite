@@ -8,7 +8,6 @@ from datetime import datetime
 import csv
 import smtplib
 import processcsv as fbdata
-import os.path, time
 import configparser
 
 cfg = configparser.ConfigParser()
@@ -28,10 +27,14 @@ salesmanDict = {'vincep': 'vince', 'vincel': 'vincel', 'glennh': 'glennh', 'tom'
 #salesmanDict = {'vincep': 'tom', 'vincel': 'tom', 'glennh': 'tom', 'ryang': 'tom', 'andrewh': 'tom', 'tom': 'tom'}
 
 def sendEmail(message):
+    #Send an email
+    #
+    #message is an object created by the createMsg function
+    ###
     try:
         username = cfg['EMAIL']['username']
         password = cfg['EMAIL']['password']
-        server = smtplib.SMTP(cfg['EMAIL']['server'], 25)  
+        server = smtplib.SMTP(cfg['EMAIL']['server'], cfg['EMAIL']['port'])  
         server.ehlo()
         server.login(username, password)  
         server.sendmail(message["From"], message["To"], message.as_string())  
@@ -39,6 +42,18 @@ def sendEmail(message):
         print(e)
     finally:
         server.quit()
+
+def createMsgGeneric(subject, fromEmail, toEmail, content):
+    #Creates an email, intending to be passed to sendEmail
+    #Generic - have to format your own message and pass it as content
+    #
+    ###
+    message = MIMEMultipart("alternative")
+    message["Subject"] = subject
+    message["From"] = fromEmail
+    message["To"] = toEmail
+    message.attach(MIMEText(content))
+    return message
 
 def createMsg(salesman,email):
     message = MIMEMultipart("alternative")

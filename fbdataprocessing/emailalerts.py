@@ -8,7 +8,6 @@ from datetime import datetime
 import csv
 import smtplib
 import processcsv as fbdata
-import os.path, time
 import configparser
 
 cfg = configparser.ConfigParser()
@@ -35,7 +34,7 @@ def sendEmail(message):
     try:
         username = cfg['EMAIL']['username']
         password = cfg['EMAIL']['password']
-        server = smtplib.SMTP(cfg['EMAIL']['server'], 25)  
+        server = smtplib.SMTP(cfg['EMAIL']['server'], cfg['EMAIL']['port'])  
         server.ehlo()
         server.login(username, password)  
         server.sendmail(message["From"], message["To"], message.as_string())  

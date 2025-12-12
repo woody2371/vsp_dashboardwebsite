@@ -6,9 +6,8 @@ import dellpost
 import configparser
 import logging
 import traceback
-import emailalerts
+from emailSender import createMsgGeneric, sendEmail
 import json
-from dellpost import get_max_eta
 
 # Config
 cfg = configparser.ConfigParser()
@@ -140,7 +139,7 @@ def main():
         dell_po_num = dell_order['purchaseOrderNumber']
         
         # Calculate longest lead time (because we can't know which item is which)
-        max_eta_resp = get_max_eta(dell_order) #returns a dict of two values: the highest ETA, and some info for notes field
+        max_eta_resp = dellpost.get_max_eta(dell_order) #returns a dict of two values: the highest ETA, and some info for notes field
         max_eta = max_eta_resp['max_eta']
         notes = max_eta_resp['notes']
 
@@ -176,6 +175,8 @@ def main():
                 # Check if date needs updating
                 if po_obj:#['dateScheduled'][:10] != new_date_str[:10]:
                     #Update Date Scheduled (top of PO)
+                    #Remove the check condition so we update status all the time
+                    old_date_str = po_obj['dateScheduled']
                     po_obj['dateScheduled'] = new_date_str
                     
                     #Sync line items - even though we don't really know their ETAs
@@ -206,9 +207,11 @@ def main():
                             item.pop('id', None)
                             item.pop('quantityFulfilled', None)  
                             item.pop('quantityPicked', None)     
-                            item.pop('status', None)             
-                    
-                    print(f"Updating PO {dell_po_num} scheduled date to {new_date_str}")
+                            item.pop('status', None)        
+
+                    print(f"Updating: PO {dell_po_num}")
+                    print(f"Old Date: {old_date_str}")
+                    print(f"New Date: {new_date_str}")
                     
                     #Save PO
                     if po_obj['number']:
@@ -231,8 +234,8 @@ def main():
     #Send email with remaining PO numbers to Dell PM
     if po_numbers_list: #Check if any POs are left in Fishbowl that don't have a matching Dell Order Placed
         try:       
-            emailalerts.sendEmail(
-                emailalerts.createMsgGeneric(
+            sendEmail(
+                createMsgGeneric(
                     "Error: Dell POs haven't been placed", #Subject
                     "tom@vspsolutions.com.au", #From: Email Address
                     "dell@vspsolutions.com.au", #To: Email Address
@@ -248,8 +251,8 @@ def main():
         #POs must be still issued in Fishbowl
         ###
         try:
-            emailalerts.sendEmail(
-            emailalerts.createMsgGeneric(
+            sendEmail(
+            createMsgGeneric(
                 "Error: Dell POs have been cancelled", #Subject
                 "tom@vspsolutions.com.au", #From: Email Address
                 "dell@vspsolutions.com.au", #To: Email Address

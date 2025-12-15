@@ -8,6 +8,7 @@ import logging
 import traceback
 from emailSender import createMsgGeneric, sendEmail
 import json
+from time import sleep
 
 # Config
 cfg = configparser.ConfigParser()
@@ -15,24 +16,31 @@ cfg.read('config.ini')
 
 #Logs to DELLAPI.log in the script folder
 logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+def get_token():
+    #Log in, acquire token, profit
+    fb_token = None
+    i = 0 #Number of times to attempt getting a token before we fail
+
+    while i<5: #Loop over until we get a token
+        i += 1 #Increment loop counter
+        try:
+            print(f"Requesting Token from Fishbowl, Attempt #: {i}")
+            fb_token = fishpost.login(cfg['FB']['host'], cfg['FB']['appName'], cfg['FB']['appDescription'], cfg['FB']['appId'], cfg['FB']['username'], cfg['FB']['password'])
+            return fb_token #once we successfully get a token we're good to exit
+        except:
+            logging.error(traceback.format_exc())
+            print("Failed to get token.")
+            sleep(10)
+    if not fb_token:
+        logging.error("Could not log into Fishbowl after 5 attempts. Exiting.")
+        return
+
 
 def main():
     print("Syncing Dell Order Status")
-    fb_token = None
-    fb_host = None
     fb_orders = []
-
-    #Log in, get token for later
-    try:
-        fb_host = cfg['FB']['host']
-        fb_token = fishpost.login(cfg['FB']['host'], cfg['FB']['appName'], cfg['FB']['appDescription'], cfg['FB']['appId'], cfg['FB']['username'], cfg['FB']['password'])
-    except:
-        logging.error(traceback.format_exc())
-
-    if not fb_token:
-        logging.error("Could not log into Fishbowl. Exiting.")
-        return
-
+    fb_host = cfg['FB']['host']
+    fb_token = get_token()
     #SQL Query - Can also use a Data Query inside Fishbowl's Data tab
     sql = """
         SELECT 

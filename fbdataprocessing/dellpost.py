@@ -5,6 +5,7 @@ import requests
 from dateutil import parser
 import logging
 import configparser
+from time import sleep
 # Config
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
@@ -16,6 +17,7 @@ def get_token(url, client_id, client_secret):
     #
     #Authenticates with Dell's API endpoint and returns the Access Token.
     ###
+    dell_token = None
 
     postData = {
         'grant_type': 'client_credentials', 
@@ -30,10 +32,15 @@ def get_token(url, client_id, client_secret):
         try:
             req = requests.post(url, data=postData, timeout=10)
             req.raise_for_status() # Raises error for 400/500 codes
-            return req.json().get('access_token')
+            dell_token = req.json().get('access_token')
+            return dell_token
         except Exception as e:
             print(f"Dell Auth Error: {e}")
             logging.error(e)
+            sleep(10) #Wait a few seconds before we try again
+    if not dell_token:
+        logging.error("Failed to get a Dell Token after 5 attempts. Exiting.")
+        return
 
 def search_orders(url, token, po_numbers):
     #
@@ -74,7 +81,11 @@ def get_max_eta(dell_order):
         else:
             dt = parser.parse(line['estimatedDeliveryDate'])
         dates.append(dt)
-        notes = notes + "\n" + line['orderStatus']    
+        if(line['trackingInformation']):
+            notes = notes + "\n" + line['orderStatus']    
+            notes = notes + "\n" + f"Tracking Information: {line['trackingInformation'][0]['carrierTrackingURL']}"
+        else:
+            notes = notes + "\n" + line['orderStatus']    
     if not dates:
         return None
         

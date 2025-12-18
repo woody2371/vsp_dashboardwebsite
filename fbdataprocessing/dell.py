@@ -41,6 +41,7 @@ def main():
     fb_orders = []
     fb_host = cfg['FB']['host']
     fb_token = get_token()
+    print(f"Acquired token {fb_token}")
     #SQL Query - Can also use a Data Query inside Fishbowl's Data tab
     sql = """
         SELECT 
@@ -57,6 +58,7 @@ def main():
     
     try:
         fb_req = fishpost.dataQuery(fb_host, fb_token, sql)
+        print(f"Sending Fishbowl Request, received back {fb_req.text}")
         fb_orders = json.loads(fb_req.text)
     except:
         logging.error(traceback.format_exc())
@@ -65,7 +67,7 @@ def main():
         return
 
     # Check if the response is an API error message
-    if isinstance(fb_orders, dict) and fb_orders.get('status', 200) != 200:
+    if isinstance(fb_orders, dict) and fb_orders.get('status') != 200:
         error_message = fb_orders.get('message', 'Unknown API Error.')
         print(f"Fishbowl API Query Failed (Status {fb_orders.get('status')}): {error_message}")
         print("Exiting due to Fishbowl API error.")

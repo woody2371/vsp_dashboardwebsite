@@ -21,6 +21,8 @@ def login(url, appName, appDescription, appId, username, password):
 	reqURL = url + "login"
 	#Create post request
 	req = requests.post(reqURL, json = postData, timeout=10)
+    
+	print(req)
 	#Print the response message from Fishbowl WEB API
 	return req .json()['token']
 

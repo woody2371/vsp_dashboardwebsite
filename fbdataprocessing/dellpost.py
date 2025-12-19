@@ -11,7 +11,7 @@ cfg = configparser.ConfigParser()
 cfg.read('config.ini')
 
 #Logs to DELLAPI.log in the script folder
-logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.INFO,format='%(asctime)s %(message)s')
 
 def get_token(url, client_id, client_secret):
     #

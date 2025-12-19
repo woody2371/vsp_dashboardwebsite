@@ -174,7 +174,8 @@ def main():
             po_response = fishpost.loadObject(fb_host, fb_token, "purchase-orders", po_id)
             
             if po_response.status_code != 200:
-                print(f"Failed to load PO {dell_po_num}")
+                print(f"Failed to load PO {dell_po_num} with response code {po_response.status_code}")
+                logging.error(f'Failed to load PO, got response: {po_response.status_code}')
                 continue
                 
             po_obj = po_response.json()

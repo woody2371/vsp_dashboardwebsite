@@ -8,15 +8,15 @@ import logging
 import traceback
 from emailSender import createMsgGeneric, sendEmail
 import json
-from time import sleep
+import time
 import os
 
+print(f"Starting dell.py at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
 # Config
 cfg = configparser.ConfigParser() #debugging
 script_dir = os.path.dirname(os.path.abspath(__file__)) #debugging
 config_path = os.path.join(script_dir, 'config.ini') #debugging
 print(f"Looking for config at: {config_path}") #debugging
-print(f"Config exists: {os.path.exists(config_path)}") #debugging
 
 cfg.read('config.ini')
 print(f"Sections found: {cfg.sections()}")
@@ -39,7 +39,7 @@ def get_token():
         except:
             logging.error(traceback.format_exc())
             print("Failed to get token.")
-            sleep(10)
+            time.sleep(10)
     if not fb_token:
         logging.error("Could not log into Fishbowl after 5 attempts. Exiting.")
         return

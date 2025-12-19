@@ -9,13 +9,22 @@ import traceback
 from emailSender import createMsgGeneric, sendEmail
 import json
 from time import sleep
+import os
 
 # Config
-cfg = configparser.ConfigParser()
+cfg = configparser.ConfigParser() #debugging
+script_dir = os.path.dirname(os.path.abspath(__file__)) #debugging
+config_path = os.path.join(script_dir, 'config.ini') #debugging
+print(f"Looking for config at: {config_path}") #debugging
+print(f"Config exists: {os.path.exists(config_path)}") #debugging
+
 cfg.read('config.ini')
+print(f"Sections found: {cfg.sections()}")
+print(f"FB host: {cfg['FB']['host']}")
+
 
 #Logs to DELLAPI.log in the script folder
-logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELLAPI.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+logging.basicConfig(filename=cfg['SYSTEM']['writepath']+'DELL-PROCESSING.log',level=logging.INFO,format='%(asctime)s %(message)s')
 def get_token():
     #Log in, acquire token, profit
     fb_token = None
@@ -42,6 +51,7 @@ def main():
     fb_host = cfg['FB']['host']
     fb_token = get_token()
     print(f"Acquired token {fb_token}")
+    print(f"Using Fishbowl IP {fb_host}")
     #SQL Query - Can also use a Data Query inside Fishbowl's Data tab
     sql = """
         SELECT 
@@ -57,8 +67,10 @@ def main():
     """
     
     try:
+        print(f"About to send query to: {fb_host}") #more debugging - cronjob isn't working
         fb_req = fishpost.dataQuery(fb_host, fb_token, sql)
-        print(f"Sending Fishbowl Request, received back {fb_req.text}")
+        print(f"Request headers: {fb_req.request.headers}") #more debugging
+        print(f"Sending Fishbowl Request, received back {fb_req.text}") #more debugging
         fb_orders = json.loads(fb_req.text)
     except:
         logging.error(traceback.format_exc())

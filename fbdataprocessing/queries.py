@@ -20,7 +20,7 @@ LEFT JOIN (SELECT * FROM pick WHERE locationgroupid = "7") as pick
 WHERE pick.locationgroupId = "7"
 AND (soitem.statusId LIKE "10" OR soitem.statusId LIKE "30" OR soitem.statusId LIKE "20")
 AND (so.statusId LIKE "20" OR so.statusId LIKE "25")
-AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%")
+AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%") AND productNum NOT LIKE ("%PICK UP%") AND productNum NOT LIKE ("%CREDIT CARD%")
 AND soitem.typeId NOT LIKE ("90")
 ORDER BY so.dateIssued
 """
@@ -43,7 +43,7 @@ LEFT JOIN (SELECT * FROM pick WHERE locationgroupid = "1") as pick
 WHERE pick.locationgroupId = "1"
 AND (soitem.statusId LIKE "10" OR soitem.statusId LIKE "30" OR soitem.statusId LIKE "20")
 AND (so.statusId LIKE "20" OR so.statusId LIKE "25")
-AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%")
+AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%") AND productNum NOT LIKE ("%PICK UP%") AND productNum NOT LIKE ("%CREDIT CARD%")
 AND soitem.typeId NOT LIKE ("90")
 """
 
@@ -65,7 +65,7 @@ LEFT JOIN (SELECT * FROM pick WHERE locationgroupid = "34") as pick
 WHERE pick.locationgroupId = "34"
 AND (soitem.statusId LIKE "10" OR soitem.statusId LIKE "30" OR soitem.statusId LIKE "20")
 AND (so.statusId LIKE "20" OR so.statusId LIKE "25")
-AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%")
+AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%") AND productNum NOT LIKE ("%PICK UP%") AND productNum NOT LIKE ("%CREDIT CARD%")
 AND soitem.typeId NOT LIKE ("90")
 """
 
@@ -87,6 +87,6 @@ LEFT JOIN (SELECT * FROM pick WHERE locationgroupid = "10") as pick
 WHERE pick.locationgroupId = "10"
 AND (soitem.statusId LIKE "10" OR soitem.statusId LIKE "30" OR soitem.statusId LIKE "20")
 AND (so.statusId LIKE "20" OR so.statusId LIKE "25")
-AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%")
+AND productNum NOT LIKE ("NX-%") AND productNum NOT LIKE ("FREIGHT%") AND productNum NOT LIKE ("HIK-CENTRAL-P%") AND productNum NOT LIKE ("%PICK UP%") AND productNum NOT LIKE ("%CREDIT CARD%")
 AND soitem.typeId NOT LIKE ("90")
 """
